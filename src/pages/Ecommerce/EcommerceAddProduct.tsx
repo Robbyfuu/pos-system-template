@@ -39,6 +39,7 @@ const EcommerceAddProduct = () => {
     files.map(file =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
+         //@ts-ignore
         formattedSize: formatBytes(file.size),
       })
     )
@@ -135,6 +136,7 @@ const EcommerceAddProduct = () => {
                           <Select
                             classNamePrefix="select2-selection"
                             placeholder="Choose..."
+                             //@ts-ignore
                             title="Country"
                             options={options}
                             isMulti
@@ -147,7 +149,7 @@ const EcommerceAddProduct = () => {
                           <textarea
                             className="form-control mb-3"
                             id="productdesc"
-                            rows="5"
+                            rows={5}
                             placeholder="Product Description"
                           />
                         </div>
@@ -171,6 +173,7 @@ const EcommerceAddProduct = () => {
                   <Form>
                     <Dropzone
                       onDrop={acceptedFiles => {
+                         //@ts-ignore
                         handleAcceptedFiles(acceptedFiles)
                       }}
                     >
@@ -205,7 +208,9 @@ const EcommerceAddProduct = () => {
                                     data-dz-thumbnail=""
                                     height="80"
                                     className="avatar-sm rounded bg-light"
+                                     //@ts-ignore
                                     alt={f.name}
+                                     //@ts-ignore
                                     src={f.preview}
                                   />
                                 </Col>
@@ -213,10 +218,11 @@ const EcommerceAddProduct = () => {
                                   <Link
                                     to="#"
                                     className="text-muted font-weight-bold"
-                                  >
+                                  > {/* @ts-ignore */}
                                     {f.name}
                                   </Link>
                                   <p className="mb-0">
+                                  {/* @ts-ignore */}
                                     <strong>{f.formattedSize}</strong>
                                   </p>
                                 </Col>
@@ -270,7 +276,7 @@ const EcommerceAddProduct = () => {
                           <textarea
                             className="form-control"
                             id="metadescription"
-                            rows="5"
+                            rows={5}
                             placeholder="Meta Description"
                           />
                         </div>

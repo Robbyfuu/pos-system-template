@@ -27,8 +27,8 @@ import Breadcrumb from "../../components/Common/Breadcrumb";
 
 import avatar from "../../assets/images/users/avatar-1.jpg";
 // actions
-import { editProfile, resetProfileFlag } from "../../store/actions";
-
+import { editProfile } from "../../store/actions";
+ //@ts-ignore
 const UserProfile = (props) => {
 
   //meta title
@@ -40,13 +40,16 @@ const UserProfile = (props) => {
   const [name, setname] = useState("");
   const [idx, setidx] = useState(1);
 
-  const { error, success } = useSelector(state => ({
+  const { error, success } = useSelector((state) => ({
+     //@ts-ignore
     error: state.Profile.error,
+     //@ts-ignore
     success: state.Profile.success,
   }));
   useEffect(() => {
     if (localStorage.getItem("authUser")) {
-      const obj = JSON.parse(localStorage.getItem("authUser"));
+       //@ts-ignore
+      const obj = JSON.parse(localStorage.getItem("authUser")) ;
       if (import.meta.env.VITE_APP_DEFAULTAUTH === "firebase") {
         setname(obj.displayName);
         setemail(obj.email);
@@ -59,9 +62,9 @@ const UserProfile = (props) => {
         setemail(obj.email);
         setidx(obj.uid);
       }
-      setTimeout(() => {
-        dispatch(resetProfileFlag());
-      }, 3000);
+      // setTimeout(() => {
+      //   dispatch(resetProfileFlag());
+      // }, 3000);
     }
   }, [dispatch, success]);
 

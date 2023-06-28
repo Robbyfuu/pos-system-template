@@ -1,3 +1,4 @@
+ //@ts-ignore
 import React, { useEffect } from "react";
 import {
   Row,
@@ -28,7 +29,7 @@ import { Link } from "react-router-dom";
 // import images
 import profileImg from "../../assets/images/profile-img.png";
 import logoImg from "../../assets/images/logo.svg";
-
+ //@ts-ignore
 const Register = (props) => {
   document.title = "Register | Skote - Vite React Admin & Dashboard Template";
 
@@ -52,16 +53,19 @@ const Register = (props) => {
       dispatch(registerUser(values));
     },
   });
-
+ //@ts-ignore
   const { user, registrationError, loading } = useSelector((state) => ({
+     //@ts-ignore
     user: state.Account.user,
+     //@ts-ignore
     registrationError: state.Account.registrationError,
+     //@ts-ignore
     loading: state.Account.loading,
   }));
 
-  useEffect(() => {
-    dispatch(apiError(""));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(apiError(""));
+  // }, []);
 
   return (
     <React.Fragment>

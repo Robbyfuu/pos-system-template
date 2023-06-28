@@ -1,7 +1,7 @@
-import { call, put, takeEvery } from "redux-saga/effects";
+// import { call, put, takeEvery } from "redux-saga/effects";
 
-import { getProducts } from "@/src/helpers/fakebackend_helper";
-import { getProductsSuccess, getProductsFail, getProducts as actionGetProduct } from "./reducer";
+// import { getProducts } from "@/src/helpers/fakebackend_helper";
+// import { getProductsSuccess, getProductsFail, getProducts as actionGetProduct } from "./reducer";
 
 // // Ecommerce Redux States
 // import {

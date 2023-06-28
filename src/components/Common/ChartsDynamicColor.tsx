@@ -1,5 +1,7 @@
+ //@ts-ignore
 const getChartColorsArray = (colors) => {
     colors = JSON.parse(colors);
+     //@ts-ignore
     return colors.map(function (value) {
         var newValue = value.replace(" ", "");
         if (newValue.indexOf(",") === -1) {

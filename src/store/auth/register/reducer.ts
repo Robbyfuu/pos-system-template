@@ -1,11 +1,11 @@
 import { User } from "../../../Interfaces";
 import { logoutUserSuccess, loginSuccess } from "../login/reducer";
 
-import {
-  REGISTER_USER,
-  REGISTER_USER_SUCCESSFUL,
-  REGISTER_USER_FAILED,
-} from "./actionTypes"
+// import {
+//   REGISTER_USER,
+//   REGISTER_USER_SUCCESSFUL,
+//   REGISTER_USER_FAILED,
+// } from "./actionTypes"
 
 import { createSlice } from "@reduxjs/toolkit";
 

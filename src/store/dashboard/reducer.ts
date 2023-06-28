@@ -4,11 +4,20 @@ import {
     GET_CHARTS_DATA
 } from "./actionTypes";
 
+interface Action {
+    type: string;
+    payload: {
+        actionType: string;
+        data?: any;
+        error?: any;
+    };
+}
+
 const INIT_STATE = {
     chartsData: []
 };
 
-const Dashboard = (state = INIT_STATE, action) => {
+const Dashboard = (state = INIT_STATE, action: Action) => {
     switch (action.type) {
         case API_SUCCESS:
             switch (action.payload.actionType) {
@@ -27,8 +36,6 @@ const Dashboard = (state = INIT_STATE, action) => {
                         ...state,
                         chartsDataError: action.payload.error
                     };
-
-
                 default:
                     return state;
             }
@@ -36,6 +43,5 @@ const Dashboard = (state = INIT_STATE, action) => {
             return state;
     }
 }
-
 
 export default Dashboard;

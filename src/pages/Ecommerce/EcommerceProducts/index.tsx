@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import withRouter from "../../../components/Common/withRouter";
 import {
   Button,
@@ -11,7 +10,6 @@ import {
   Container,
   Form,
   Input,
-  Label,
   Nav,
   NavItem,
   NavLink,
@@ -22,93 +20,130 @@ import {
   Table,
 } from "reactstrap";
 import classnames from "classnames";
-import { isEmpty, map } from "lodash";
-
-//Import Product Images
-import { productImages } from "@/src/assets/images/product";
+import {  isEmpty, map } from "lodash";
 
 //Import Breadcrumb
 import Breadcrumbs from "@/src/components/Common/Breadcrumb";
+
+//Interfaces
+import { IProduct, IStateCart, IStateProducts, ProductsProps } from "@/src/Interfaces";
 
 //Urql
 import { useQuerys } from "@/src/helpers/Apollo";
 
 //Querys
-import { productsQuery } from "@/src/helpers/Apollo/querys";
+import { countProductsQuery, productsQuery } from "@/src/helpers/Apollo/querys";
 
 //Import actions
-import { getProducts as onGetProducts,
+import {
+  getProducts as onGetProducts,
+  getProductsPagination,
   getProductsSuccess,
   getProductsFail,
 } from "@/src/store/e-commerce/reducer";
+import { addProductToCart, removeProductFromCart, updateQuantityAdd, updateQuantitySub } from "@/src/store/cart/cart.reducer";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
 
-const EcommerceProducts = (props) => {
+const EcommerceProducts: React.FC<ProductsProps> = (_props) => {
   //meta title
   document.title = "Products | Skote - Vite React Admin & Dashboard Template";
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  
+  let queryResult = useQuerys(productsQuery);
+  const queryCountProducts = useQuerys(countProductsQuery);
 
-  const queryResult = useQuerys(productsQuery);
-
-  const { products } = useSelector((state) => ({
-    products: state.ecommerce.products,
+  const { products } = useSelector((state: IStateProducts) => ({
+    // products: state.ecommerce.products,
+    products: state.ecommerce.productsPagination,
   }));
+  const { cart } = useSelector ((state: IStateCart) =>({
+    cart: state.Cart.cart
+  }))
+  // useStates
+  const [productList, setProductList] = useState<IProduct[] | undefined>(
+    undefined
+  );
+  const [cartItems, setCartItems] = useState<IProduct[] | undefined >(undefined);
 
-  const { history } = props;
-  // eslint-disable-next-line no-unused-vars
-
-  const [productList, setProductList] = useState<[]>();
   const [activeTab, setActiveTab] = useState("1");
-  // eslint-disable-next-line no-unused-vars
-
   const [page, setPage] = useState(1);
-  // eslint-disable-next-line no-unused-vars
-  const [totalPage, setTotalPage] = useState(5);
+  const totalPage = queryCountProducts?.data
+    ? Math.ceil(queryCountProducts?.data.countProducts / 9)
+    : 0;
 
   useEffect(() => {
-    setProductList(products);
+    if (products) {
+      setProductList(products);
+    }
   }, [products]);
+  useEffect(() => {
+    if (cart) {
+      setCartItems(cart);
+    }
+  }
+  , [cart]);
+
 
   useEffect(() => {
     dispatch(onGetProducts());
-    if (!queryResult.fetching && !queryResult.error && queryResult.data){
-      dispatch(getProductsSuccess(queryResult.data.myPosts));
-    }
-    else if (queryResult.error) {
+    if (
+      queryResult &&
+      !queryResult.fetching &&
+      !queryResult.error &&
+      queryResult.data
+    ) {
+      dispatch(getProductsSuccess(queryResult.data.products));
+    } else if (queryResult && queryResult.error) {
       dispatch(getProductsFail(queryResult.error));
     }
-  }, [dispatch,queryResult]);
+  }, [queryResult]);
 
   useEffect(() => {
     if (!isEmpty(products)) setProductList(products);
-  }, [products]);
+  }, [getProductsPagination]);
 
-  const toggleTab = (tab) => {
+  useEffect(() => {
+    dispatch(getProductsPagination(page));
+  }, [page]);
+
+  const toggleTab = (tab: string) => {
     if (activeTab !== tab) {
       setActiveTab(tab);
     }
   };
 
-  const handlePageClick = (page) => {
+  const handlePageClick = (page: number) => {
     setPage(page);
+    dispatch(getProductsPagination(page));
+  };
+  const handleAddToCart = (product: IProduct) => {
+    dispatch(addProductToCart(product));
+  };
+  const handleRemoveFromCart = (product: IProduct) => {
+    dispatch(removeProductFromCart(product));
+  };
+  const handleUpdateQuantityAdd = (product: IProduct) => {
+    dispatch(updateQuantityAdd(product));
+  };
+  const handleUpdateQuantitySub = (product: IProduct) => {
+    dispatch(updateQuantitySub(product));
   };
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Ecommerce" breadcrumbItem="Products" />
+          <Breadcrumbs title="Nombre Negocio" breadcrumbItem="Productos" />
           <Row>
             <Col lg="7">
               <Row className="mb-3">
                 <Col xl="4" sm="6">
-                  <div className="mt-2">
-                    <h5>Clothes</h5>
-                  </div>
+                  {/* <div className="mt-2">
+                    <h5>Productos</h5>
+                  </div> */}
                 </Col>
                 <Col lg="8" sm="6">
                   <Form className="mt-4 mt-sm-0 float-sm-end d-flex align-items-center">
@@ -153,48 +188,50 @@ const EcommerceProducts = (props) => {
               </Row>
               <Row>
                 {!isEmpty(productList) &&
-                productList?.map((product, key) => (
+                  productList?.map((product, key) => (
                     <Col xl="4" sm="6" key={"_col_" + key}>
                       <Card>
                         <CardBody>
                           <div className="product-img position-relative">
-                            {product.isOffer ? (
-                              <div className="avatar-sm product-ribbon">
-                                <span className="avatar-title rounded-circle bg-primary">
-                                  {`- ${product.offer} %`}
-                                </span>
-                              </div>
-                            ) : null}
-
                             <img
-                              src={productImages[product.image]}
+                              src={product.productImage}
                               alt=""
                               className="img-fluid mx-auto d-block"
                             />
                           </div>
                           <div className="mt-4 text-center">
                             <h5 className="mb-3 text-truncate">
-                              <div className="text-dark">{product.name} </div>
+                              <div className="text-dark">
+                                {product.productName}{" "}
+                              </div>
                             </h5>
-                          <div
-                            className="input-group d-flex align-items-center justify-content-center mt-2"
-                            style={{ gap: "10px" }}
-                          >
-                            <Input
-                              type="text"
-                              placeholder="Cantidad"
-                              min={1}
-                              defaultValue={1}
-                              className="text-center" // Centrar el texto dentro del input
-                            />
-                            <div className="input-group-append">
-                              <b className="text-center">${product.newPrice}</b>
+                            <div className="mb-3">
+                              <h5 className="text-truncate">
+                                {`$ ${product.productPrice} ${product.productUnit}`}
+                              </h5>
                             </div>
-                          </div>
+                            <div
+                              className="input-group d-flex align-items-center justify-content-center mt-2"
+                              style={{ gap: "10px" }}
+                            >
+                              <Input
+                                type="text"
+                                placeholder="Cantidad"
+                                min={1}
+                                defaultValue={1}
+                                className="text-center" // Centrar el texto dentro del input
+                              />
+                              <div className="input-group-append">
+                                <b className="text-center">
+                                  ${product.productUnit}
+                                </b>
+                              </div>
+                            </div>
                             <Button
                               color="primary"
                               size="sm"
                               className="mt-2 me-1"
+                              onClick={() => handleAddToCart(product)}
                             >
                               Agregar
                             </Button>
@@ -215,12 +252,9 @@ const EcommerceProducts = (props) => {
                         onClick={() => handlePageClick(page - 1)}
                       />
                     </PaginationItem>
-                    {map(Array(totalPage), (item, i) => (
+                    {map(Array(totalPage), (_item, i) => (
                       <PaginationItem active={i + 1 === page} key={i}>
-                        <PaginationLink
-                          onClick={() => handlePageClick(i + 1)}
-                          href="#"
-                        >
+                        <PaginationLink onClick={() => handlePageClick(i + 1)}>
                           {i + 1}
                         </PaginationLink>
                       </PaginationItem>
@@ -241,22 +275,22 @@ const EcommerceProducts = (props) => {
                 <CardBody>
                   <CardTitle className="mb-4">Productos</CardTitle>
                   <Col lx="8">
-              <Card>
-                <CardBody>
-                  <div className="table-responsive">
-                    <Table className="table align-middle mb-0 table-nowrap">
-                      <thead className="table-light">
-                        <tr>
-                          <th>Product</th>
-                          <th>Price</th>
-                          <th>Quantity</th>
-                          <th colSpan="2">Total</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {Array(15)?.map(product => (
-                          <tr key={product.id}>
-                            {/* <td>
+                    <Card>
+                      <CardBody>
+                        <div className="table-responsive">
+                          <Table className="table align-middle mb-0 table-nowrap">
+                            <thead className="table-light">
+                              <tr>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th colSpan={2}>Total</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {cartItems?.map((product) => (
+                                <tr key={product.id}>
+                                  {/* <td>
                               <img
                                 src={product.img}
                                 alt="product-img"
@@ -264,93 +298,101 @@ const EcommerceProducts = (props) => {
                                 className="avatar-md"
                               />
                             </td> */}
-                            <td>
-                              <h5 className="font-size-14 text-truncate">
-                                <Link
-                                  to={"/ecommerce-product-detail/" + product.id}
-                                  className="text-dark"
-                                >
-                                  {product.name}
-                                </Link>
-                              </h5>
-                              <p className="mb-0">
-                                Color :{" "}
-                                <span className="fw-medium">
-                                  {product.color}
-                                </span>
-                              </p>
-                            </td>
-                            <td>$ {product.price}</td>
-                            <td>
-                              <div style={{ width: "120px" }}>
-                                <div className="input-group">
-                                  <div className="input-group-prepend">
-                                    <button
-                                      type="button"
-                                      className="btn btn-primary"
-                                      // onClick={() => {
-                                      //   countUP(product.id, product.data_attr);
-                                      // }}
-                                      >+
-                                    </button>
-                                  </div>
-                                  <Input
-                                    type="text"
-                                    value={product.data_attr}
-                                    name="demo_vertical"
-                                    readOnly
-                                  />
-                                  <div className="input-group-append">
-                                    <button type="button" className="btn btn-primary"
-                                      // onClick={() => {
-                                      //   countDown(product.id, product.data_attr);
-                                      // }}
-                                      >-</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td>$ {product.total}</td>
-                            <td>
+                                  <td>
+                                    <h5 className="font-size-14 text-truncate">
+                                      <Link
+                                        to={
+                                          "/ecommerce-product-detail/" +
+                                          product.id
+                                        }
+                                        className="text-dark"
+                                      >
+                                        {product.productName}
+                                      </Link>
+                                    </h5>
+                                    <p className="mb-0">
+                                      Color :{" "}
+                                      <span className="fw-medium">
+                                        {product.productCategory}
+                                      </span>
+                                    </p>
+                                  </td>
+                                  <td>$ {product.productPrice}</td>
+                                  <td>
+                                    <div style={{ width: "120px" }}>
+                                      <div className="input-group">
+                                        <div className="input-group-prepend">
+                                          <button
+                                            type="button"
+                                            className="btn btn-primary"
+                                            onClick={() => {
+                                              handleUpdateQuantitySub(product)
+                                            }}
+                                          >
+                                            -
+                                          </button>
+                                        </div>
+                                        <Input
+                                          type="text"
+                                          value={product.cartQuantity}
+                                          name="demo_vertical"
+                                          readOnly
+                                        />
+                                        <div className="input-group-append">
+                                          <button
+                                            type="button"
+                                            className="btn btn-primary"
+                                            onClick={() => {
+                                              handleUpdateQuantityAdd(product)
+                                            }}
+                                          >
+                                            +
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td>$ {product.cartQuantity? product.cartQuantity*product.productPrice: 0}</td>
+                                  <td>
+                                    <Link
+                                      to="#"
+                                      onClick={() => handleRemoveFromCart(product)}
+                                      className="action-icon text-danger"
+                                    >
+                                      {" "}
+                                      <i className="mdi mdi-trash-can font-size-18" />
+                                    </Link>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
+                        </div>
+                        <Row className="mt-4">
+                          <Col sm="6">
+                            <Link
+                              to="/ecommerce-products"
+                              className="btn btn-secondary"
+                            >
+                              <i className="mdi mdi-arrow-left me-1" /> Continue
+                              Shopping{" "}
+                            </Link>
+                          </Col>
+                          <Col sm="6">
+                            <div className="text-sm-end mt-2 mt-sm-0">
                               <Link
-                                to="#"
-                                // onClick={() => removeCartItem(product.id)}
-                                className="action-icon text-danger"
+                                to="/ecommerce-checkout"
+                                className="btn btn-success"
                               >
-                                {" "}
-                                <i className="mdi mdi-trash-can font-size-18" />
+                                <i className="mdi mdi-cart-arrow-right me-1" />{" "}
+                                Checkout{" "}
                               </Link>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </Table>
-                  </div>
-                  <Row className="mt-4">
-                    <Col sm="6">
-                      <Link
-                        to="/ecommerce-products"
-                        className="btn btn-secondary"
-                      >
-                        <i className="mdi mdi-arrow-left me-1" /> Continue
-                        Shopping{" "}
-                      </Link>
-                    </Col>
-                    <Col sm="6">
-                      <div className="text-sm-end mt-2 mt-sm-0">
-                        <Link
-                          to="/ecommerce-checkout"
-                          className="btn btn-success"
-                        >
-                          <i className="mdi mdi-cart-arrow-right me-1" />{" "}
-                          Checkout{" "}
-                        </Link>
-                      </div>
-                    </Col>
-                  </Row>
-                </CardBody>
-              </Card>
-            </Col>
+                            </div>
+                          </Col>
+                        </Row>
+                      </CardBody>
+                    </Card>
+                  </Col>
                 </CardBody>
               </Card>
             </Col>
@@ -359,12 +401,6 @@ const EcommerceProducts = (props) => {
       </div>
     </React.Fragment>
   );
-};
-
-EcommerceProducts.propTypes = {
-  products: PropTypes.array,
-  history: PropTypes.object,
-  onGetProducts: PropTypes.func,
 };
 
 export default withRouter(EcommerceProducts);

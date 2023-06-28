@@ -21,7 +21,7 @@ import {
 // interfaces
 import { HeaderProps, IState } from "../../Interfaces";
 
-const Header: React.FC<HeaderProps> = (props) => {
+const Header: React.FC<HeaderProps> = (_props) => {
   const [search, setsearch] = useState(false);
 
   function toggleFullscreen() {
@@ -37,6 +37,7 @@ const Header: React.FC<HeaderProps> = (props) => {
         document.documentElement.mozRequestFullScreen();
       } else if (document.documentElement.webkitRequestFullscreen) {
         document.documentElement.webkitRequestFullscreen(
+           //@ts-ignore
           Element.ALLOW_KEYBOARD_INPUT
         );
       }
@@ -189,4 +190,5 @@ export default connect(mapStatetoProps, {
   showRightSidebarAction,
   toggleLeftmenu,
   changeSidebarType,
+   //@ts-ignore
 })(Header);

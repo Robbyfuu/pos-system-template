@@ -1,8 +1,8 @@
-import axios, { AxiosResponse } from "axios";
-import { post, get } from "./api_helper";
+import axios from "axios";
+import { post } from "./api_helper";
 
 import * as url from "./url_helper";
-import { UserResponse } from "../Interfaces";
+import { User } from "../Interfaces";
 
 
 // Gets the logged in user data from local session
@@ -22,7 +22,7 @@ const isUserAuthenticated = () => {
 const postJwtProfile = (data: Record<string, unknown>) => post(url.POST_EDIT_JWT_PROFILE, data);
 
 // Register Method
-const postJwtRegister = (url:string, data: Record<string, unknown>) => {
+const postJwtRegister = (url:string, data: User) => {
   return axios
     .post(url, data)
     .then(response => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+ //@ts-ignore
 import { Badge } from "reactstrap";
 
 // const formateDate = (date, format) => {
@@ -8,10 +8,11 @@ import { Badge } from "reactstrap";
 //   const date1 = moment(new Date(date)).format(dateFormat);
 //   return date1;
 // };
+ //@ts-ignore
 const toLowerCase1 = (str) => {
   return str === "" || str === undefined ? "" : str.toLowerCase();
 };
-
+ //@ts-ignore
 const OrderId = (cell) => {
   return (
     <Link to="#" className="text-body fw-bold">
@@ -19,19 +20,19 @@ const OrderId = (cell) => {
     </Link>
   );
 };
-
+ //@ts-ignore
 const BillingName = (cell) => {
   return cell.value ? cell.value : "";
 };
-
+ //@ts-ignore
 const Date = (cell) => {
   return cell.value ? cell.value : "";
 };
-
+ //@ts-ignore
 const Total = (cell) => {
   return cell.value ? cell.value : "";
 };
-
+ //@ts-ignore
 const PaymentStatus = (cell) => {
   return (
     <div
@@ -43,12 +44,14 @@ const PaymentStatus = (cell) => {
           ? "warning"
           : "danger")
       }
+       //@ts-ignore
       pill="true"
     >
       {cell.value}
     </div>
   );
 };
+ //@ts-ignore
 const PaymentMethod = (cell) => {
   return (
     <span>

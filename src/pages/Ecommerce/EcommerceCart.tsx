@@ -86,7 +86,7 @@ const EcommerceCart = () => {
   document.title="Cart | Skote - Vite React Admin & Dashboard Template";
 
   const [productList, setproductList] = useState(productListvar);
-
+ //@ts-ignore
   function removeCartItem(id) {
     var filtered = productList.filter(function (item) {
       return item.id !== id;
@@ -94,7 +94,7 @@ const EcommerceCart = () => {
 
     setproductList(filtered);
   }
-
+ //@ts-ignore
   function countUP(id, prev_data_attr) {
     setproductList(
       productList.map(p =>
@@ -102,7 +102,7 @@ const EcommerceCart = () => {
       )
     );
   }
-
+ //@ts-ignore
   function countDown(id, prev_data_attr) {
     setproductList(
       productList.map(p =>
@@ -130,7 +130,7 @@ const EcommerceCart = () => {
                           <th>Product Desc</th>
                           <th>Price</th>
                           <th>Quantity</th>
-                          <th colSpan="2">Total</th>
+                          <th colSpan={2}>Total</th>
                         </tr>
                       </thead>
                       <tbody>

@@ -1,4 +1,4 @@
-import { PROFILE_ERROR, PROFILE_SUCCESS, EDIT_PROFILE, RESET_PROFILE_FLAG } from "./actionTypes";
+// import { PROFILE_ERROR, PROFILE_SUCCESS, EDIT_PROFILE, RESET_PROFILE_FLAG } from "./actionTypes";
 import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   error: "",
@@ -8,7 +8,7 @@ const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
-      editProfile: (state) => {
+      editProfile: (_state) => {
           // Aquí puedes realizar alguna acción si es necesario cuando se inicia la edición
       },
       profileSuccess: (state, action) => {

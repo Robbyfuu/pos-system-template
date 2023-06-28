@@ -26,9 +26,8 @@ import classnames from "classnames"
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 
-//Import Images
-import img1 from "../../assets/images/product/img-1.png"
-import img7 from "../../assets/images/product/img-7.png"
+
+
 
 const optionGroup = [
   {
@@ -52,12 +51,12 @@ const optionGroup = [
 const orderSummary = [
   {
     id: 1,
-    img: img1,
+    img: null,
     productTitle: "Half sleeve T-shirt (64GB)",
     price: 450,
     qty: 1,
   },
-  { id: 2, img: img7, productTitle: "Wireless Headphone", price: 225, qty: 1 },
+  { id: 2, img: null, productTitle: "Wireless Headphone", price: 225, qty: 1 },
 ]
 
 const EcommerceCheckout = () => {
@@ -67,7 +66,7 @@ const EcommerceCheckout = () => {
 
   const [activeTab, setactiveTab] = useState("1")
   const [selectedGroup, setselectedGroup] = useState(null)
-
+ //@ts-ignore
   function handleSelectGroup(selectedGroup) {
     setselectedGroup(selectedGroup)
   }
@@ -192,7 +191,7 @@ const EcommerceCheckout = () => {
                                 <textarea
                                   className="form-control"
                                   id="billing-address"
-                                  rows="3"
+                                  rows={3}
                                   placeholder="Enter full address"
                                 />
                               </Col>
@@ -499,7 +498,7 @@ const EcommerceCheckout = () => {
                                 <textarea
                                   className="form-control"
                                   id="example-textarea"
-                                  rows="3"
+                                  rows={3}
                                   placeholder="Write some note.."
                                 />
                               </Col>
@@ -652,7 +651,8 @@ const EcommerceCheckout = () => {
                                     <tr key={"_orderSummary_" + key}>
                                       <th scope="row">
                                         <img
-                                          src={orderitem.img}
+                                         //@ts-ignore
+                                          src={orderitem?.img}
                                           alt="product-img"
                                           title="product-img"
                                           className="avatar-md"
@@ -677,7 +677,7 @@ const EcommerceCheckout = () => {
                                     </tr>
                                   ))}
                                   <tr>
-                                    <td colSpan="2">
+                                    <td colSpan={2}>
                                       <h6 className="m-0 text-end">
                                         Sub Total:
                                       </h6>
@@ -685,7 +685,7 @@ const EcommerceCheckout = () => {
                                     <td>$ 675</td>
                                   </tr>
                                   <tr>
-                                    <td colSpan="3">
+                                    <td colSpan={3}>
                                       <div className="bg-primary bg-soft p-3 rounded">
                                         <h5 className="font-size-14 text-primary mb-0">
                                           <i className="fas fa-shipping-fast me-2" />{" "}
@@ -698,7 +698,7 @@ const EcommerceCheckout = () => {
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td colSpan="2">
+                                    <td colSpan={2}>
                                       <h6 className="m-0 text-end">Total:</h6>
                                     </td>
                                     <td>$ 675</td>

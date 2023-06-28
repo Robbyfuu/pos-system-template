@@ -20,7 +20,7 @@ import {
 /**
  * Changes the body attribute
  */
-function changeBodyAttribute(attribute, value) {
+function changeBodyAttribute(attribute:any, value: any) {
   if (document.body) document.body.setAttribute(attribute, value)
   return true
 }
@@ -29,7 +29,8 @@ function changeBodyAttribute(attribute, value) {
  * Toggle the class on body
  * @param {*} cssClass
  */
-function manageBodyClass(cssClass, action = "toggle") {
+
+function manageBodyClass(cssClass: string, action = "toggle") {
   switch (action) {
     case "add":
       if (document.body) document.body.classList.add(cssClass)
@@ -49,7 +50,10 @@ function manageBodyClass(cssClass, action = "toggle") {
  * Changes the layout type
  * @param {*} param0
  */
-function* changeLayout({ payload: layout }) {
+interface IChangeLayout {
+  payload: string
+}
+function* changeLayout({ payload: layout }: IChangeLayout ) {
   try {
     if (layout === "horizontal") {
       yield put(changeTopbarThemeAction("dark"))
@@ -67,7 +71,10 @@ function* changeLayout({ payload: layout }) {
  * Changes the layout mode
  * @param {*} param0
  */
- function* changeLayoutMode({ payload: mode }) {
+interface IChangeLayoutMode {
+  payload: string
+}
+ function* changeLayoutMode({ payload: mode }: IChangeLayoutMode) {
   try {
       yield call(changeBodyAttribute, "data-layout-mode", mode);
   } catch (error) {
@@ -79,7 +86,10 @@ function* changeLayout({ payload: layout }) {
  * Changes the layout width
  * @param {*} param0
  */
-function* changeLayoutWidth({ payload: width }) {
+interface IChangeLayoutWidth {
+  payload: string
+}
+function* changeLayoutWidth({ payload: width }: IChangeLayoutWidth) {
   try {
     if (width === "boxed") {
       yield put(changeSidebarTypeAction("icon"))
@@ -100,7 +110,7 @@ function* changeLayoutWidth({ payload: width }) {
  * Changes the left sidebar theme
  * @param {*} param0
  */
-function* changeLeftSidebarTheme({ payload: theme }) {
+function* changeLeftSidebarTheme({ payload: theme }: IChangeLeftSidebarThemeImage ) {
   try {
     yield call(changeBodyAttribute, "data-sidebar", theme)
   } catch (error) {}
@@ -110,27 +120,39 @@ function* changeLeftSidebarTheme({ payload: theme }) {
  * Changes the left sidebar theme Image
  * @param {*} param0
  */
- function* changeLeftSidebarThemeImage({ payload: theme }) {
+interface IChangeLeftSidebarThemeImage {
+  payload: string
+}
+ function* changeLeftSidebarThemeImage({ payload: theme }: IChangeLeftSidebarThemeImage) {
   try {
     yield call(changeBodyAttribute, "data-sidebar-image", theme)
   } catch (error) {}
 }
 
+interface IChangeTopbarTheme {
+  payload: string
+}
 /**
  * Changes the topbar theme
  * @param {*} param0
  */
-function* changeTopbarTheme({ payload: theme }) {
+function* changeTopbarTheme({ payload: theme }: IChangeTopbarTheme) {
   try {
     yield call(changeBodyAttribute, "data-topbar", theme)
   } catch (error) {}
 }
 
+interface IChangeLeftSidebarType {
+  payload: {
+    sidebarType: string
+    isMobile: boolean
+  }
+}
 /**
  * Changes the left sidebar type
  * @param {*} param0
  */
-function* changeLeftSidebarType({ payload: { sidebarType, isMobile } }) {
+function* changeLeftSidebarType({ payload: { sidebarType, isMobile } }: IChangeLeftSidebarType) {
   try {
     switch (sidebarType) {
       case "compact":
@@ -178,27 +200,27 @@ function* showRightSidebar() {
  * Watchers
  */
 export function* watchChangeLayoutType() {
-  yield takeEvery(CHANGE_LAYOUT, changeLayout)
+  yield takeEvery(CHANGE_LAYOUT as any, changeLayout)
 }
 
 export function* watchChangeLayoutWidth() {
-  yield takeEvery(CHANGE_LAYOUT_WIDTH, changeLayoutWidth)
+  yield takeEvery(CHANGE_LAYOUT_WIDTH as any, changeLayoutWidth)
 }
 
 export function* watchChangeLeftSidebarTheme() {
-  yield takeEvery(CHANGE_SIDEBAR_THEME, changeLeftSidebarTheme)
+  yield takeEvery(CHANGE_SIDEBAR_THEME as any, changeLeftSidebarTheme)
 }
 
 export function* watchChangeLeftSidebarThemeImage() {
-  yield takeEvery(CHANGE_SIDEBAR_THEME_IMAGE, changeLeftSidebarThemeImage)
+  yield takeEvery(CHANGE_SIDEBAR_THEME_IMAGE as any, changeLeftSidebarThemeImage)
 }
 
 export function* watchChangeLeftSidebarType() {
-  yield takeEvery(CHANGE_SIDEBAR_TYPE, changeLeftSidebarType)
+  yield takeEvery(CHANGE_SIDEBAR_TYPE as any, changeLeftSidebarType)
 }
 
 export function* watchChangeTopbarTheme() {
-  yield takeEvery(CHANGE_TOPBAR_THEME, changeTopbarTheme)
+  yield takeEvery(CHANGE_TOPBAR_THEME as any, changeTopbarTheme)
 }
 
 export function* watchShowRightSidebar() {
@@ -206,7 +228,7 @@ export function* watchShowRightSidebar() {
 }
 
 export function* watchSChangeLayoutMode() {
-  yield takeEvery(CHANGE_LAYOUT_MODE, changeLayoutMode)
+  yield takeEvery(CHANGE_LAYOUT_MODE as any, changeLayoutMode)
 }
 
 function* LayoutSaga() {

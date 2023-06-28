@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig,  InternalAxiosRequestConfig } from "axios";
 import authHeader from "./jwt-token-access/auth-token-header";
 
 

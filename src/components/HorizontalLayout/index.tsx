@@ -140,6 +140,7 @@ const Layout: React.FC<IHorizontalLayout> = (props) => {
           isMenuOpened={isMenuOpened}
           openLeftMenuCallBack={openMenu}
         />
+        {/* @ts-ignore */}
         <Navbar menuOpen={isMenuOpened} />
         <div className="main-content">{props.children}</div>
         <Footer />

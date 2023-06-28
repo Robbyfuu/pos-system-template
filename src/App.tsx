@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import React from "react";
 
 import { Routes, Route } from "react-router-dom";
@@ -67,12 +66,19 @@ const App = () => {
   return (
     <React.Fragment>
       <Routes>
+        {/* ts-ignore */}
         {publicRoutes.map((route, idx) => (
           <Route
             path={route.path}
-            element={<NonAuthLayout>{route.component}</NonAuthLayout>}
+            element={
+              <>
+              {/*@ts-ignore  */}
+                <NonAuthLayout>{route.component}</NonAuthLayout>
+              </>
+            }
             key={idx}
-            exact={true}
+            // exact={true}
+            caseSensitive
           />
         ))}
 
@@ -81,23 +87,21 @@ const App = () => {
             path={route.path}
             element={
               <Authmiddleware>
+                {/*@ts-ignore  */}
                 <Layout>{route.component}</Layout>
               </Authmiddleware>
             }
             key={idx}
-            exact={true}
+            // exact={true}
           />
         ))}
+        {/* </Route> */}
       </Routes>
     </React.Fragment>
   );
 };
 
-App.propTypes = {
-  layout: PropTypes.any,
-};
-
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: IState) => {
   return {
     layout: state.Layout,
   };

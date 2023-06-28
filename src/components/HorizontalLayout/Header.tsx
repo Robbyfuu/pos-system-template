@@ -33,6 +33,7 @@ const Header: React.FC<HeaderProps> = (props) => {
         document.documentElement.mozRequestFullScreen();
       } else if (document.documentElement.webkitRequestFullscreen) {
         document.documentElement.webkitRequestFullscreen(
+           //@ts-ignore
           Element.ALLOW_KEYBOARD_INPUT
         );
       }

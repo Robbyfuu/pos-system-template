@@ -1,17 +1,14 @@
-import { IStateCart } from "@/src/Interfaces";
+import { IProduct } from "@/src/Interfaces";
 import { createSlice } from "@reduxjs/toolkit";
 
-interface IProduct {
-    productId: string;
-    productName: string;
-    productPrice: number;
-    productImage: string;
-    cartQuantity?: number;
-    productUnit: string;
+
+
+interface ICart{
+  cart: IProduct[];
+  loading?: boolean;
+  error?: string;
 }
-
-
-const initialState: IStateCart = {
+const initialState: ICart = {
   cart: [],
   loading: false,
   error: "",
@@ -23,8 +20,9 @@ const cartSlice = createSlice({
   reducers: {
     addProductToCart: (state, action) => {
       const itemIndex = state.cart.findIndex(
-        (item) => item.productId === action.payload.productId
+        (item) => item.id === action.payload.id
       );
+      
       if (itemIndex >= 0) {
         state.cart[itemIndex].cartQuantity! += 1;
       } else {
@@ -34,13 +32,13 @@ const cartSlice = createSlice({
     },
     removeProductFromCart: (state, action) => {
         const itemDeleteDefinitive = state.cart.findIndex(
-            item => item.productId === action.payload.productId
+            item => item.id === action.payload.id
           )
           state.cart.splice(itemDeleteDefinitive, 1)
     },
     updateQuantityAdd: (state, action) => {
       const itemIndex = state.cart.findIndex(
-        (item) => item.productId === action.payload.productId
+        (item) => item.id === action.payload.id
       );
       if (itemIndex >= 0) {
         state.cart[itemIndex].cartQuantity! += 1;
@@ -49,16 +47,21 @@ const cartSlice = createSlice({
       }
     },
     updateQuantitySub: (state, action) => {
-      const itemDelete = state.cart.findIndex(
-        (item) => item.productId === action.payload.productId
-      );
-      const cartDataMap = state.cart.map(
-        (product) => product.cartQuantity
-      );
-      if (cartDataMap[itemDelete]! >= 1) {
-        state.cart[itemDelete].cartQuantity! -= 1;
-      } else {
-        state.cart.splice(itemDelete, 1);
+      const itemId = action.payload.id;
+      const itemIndex = state.cart.findIndex(item => item.id === itemId);
+    
+      if (itemIndex !== -1) {
+        const currentItem = state.cart[itemIndex];
+        const updatedQuantity = currentItem.cartQuantity! - 1;
+    
+        if (updatedQuantity <= 0) {
+          state.cart.splice(itemIndex, 1);
+        } else {
+          state.cart[itemIndex] = {
+            ...currentItem,
+            cartQuantity: updatedQuantity
+          };
+        }
       }
     },
   },

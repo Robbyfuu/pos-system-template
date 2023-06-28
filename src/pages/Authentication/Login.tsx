@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import withRouter from "../../components/Common/withRouter";
 
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import {  useDispatch } from "react-redux";
 
 // Formik validation
 import * as Yup from "yup";
@@ -29,7 +29,7 @@ import { loginUser } from "../../store/auth/login/reducer";
 // import images
 import profile from "../../assets/images/profile-img.png";
 import logo from "../../assets/images/logo.svg";
-import {  IStateLogin, LoginProps } from "../../Interfaces";
+import {   LoginProps } from "../../Interfaces";
 // import { loginUser } from "../../store/actions";
 
 const Login: React.FC<LoginProps> = (props) => {

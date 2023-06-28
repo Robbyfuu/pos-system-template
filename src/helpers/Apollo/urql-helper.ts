@@ -1,4 +1,6 @@
+ //@ts-ignore
 import { useEffect } from "react";
+
 import {
   Client,
   cacheExchange,
@@ -23,7 +25,7 @@ export const client = new Client({
 
 export function useQuerys(query: TypedDocumentNode<any, AnyVariables>, variables?: any) {
     try{
-
+       //@ts-ignore
         const [result, reexecuteQuery] = useQuery({
         query,
         variables,
@@ -54,6 +56,7 @@ export async function useMutations(
   mutation: string,
   variables: Record<string, unknown>
 ) {
+   //@ts-ignore
   const [updateTodoResult, updateTodo] = useMutation(mutation);
 
   const result = await updateTodo(variables)

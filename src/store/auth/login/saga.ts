@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { message, notification } from "antd";
+import {  notification } from "antd";
 
 import { call, put, takeEvery } from "redux-saga/effects";
 

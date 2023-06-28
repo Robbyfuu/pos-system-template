@@ -1,4 +1,4 @@
-import { IProduct, User, UserResponse } from "..";
+import { IProduct, User } from "..";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface IState {
@@ -28,27 +28,42 @@ export interface IState {
   Login?: {
     loading?: boolean;
     error?: string;
-    response: UserResponse;
   };
 }
 export interface IStateLogin {
-  Login:{
+  Login: {
     loading?: boolean;
     error?: string;
-  }
+  };
 }
 export interface IStateRegister {
-  Acount:{
+  Acount: {
     loading?: boolean;
     registrationError?: string;
     message?: string;
     user?: User;
     accessToken?: string;
     refreshToken?: string;
-  }
+  };
 }
 export interface IStateCart {
-  cart: IProduct[];
-  loading?: boolean;
-  error?: string;
+  Cart: {
+    cart: IProduct[];
+    loading?: boolean;
+    error?: string;
+  };
+}
+export interface IStateProducts {
+  ecommerce: {
+    products: IProduct[];
+    productsPagination: IProduct[];
+    loading?: boolean;
+    error?: string;
+    orders: IProduct[];
+    pagination: {
+      pageActual: number;
+      limit: number;
+      offset: number;
+    };
+  };
 }

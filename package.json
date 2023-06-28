@@ -6,7 +6,7 @@
   "scripts": {
     "tsc-watch": "tsc --watch",
     "vite-dev": "vite",
-    "dev": "npm-run-all --parallel tsc-watch vite-dev",
+    "start:dev": "npm-run-all --parallel tsc-watch vite-dev",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -43,6 +43,7 @@
     "@types/prop-types": "^15.7.5",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
+    "@types/react-table": "^7.7.14",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",
     "@vitejs/plugin-react-swc": "^3.0.0",

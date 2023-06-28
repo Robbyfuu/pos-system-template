@@ -12,11 +12,14 @@ import {
 // initialize relavant method of both Auth
 
 // Is user register successfull then direct plot user in redux.
-function* registerUser({ payload: { user } }) {
+import { PayloadAction } from "@reduxjs/toolkit";
+import { User } from "@/src/Interfaces";
+
+function* registerUser({ payload: { user } }: PayloadAction<{ user: User }>) {
   console.log("using the following url for registration: ");
   try {
     console.log("Trying to register user (within try block)");
-    const response = yield call(postJwtRegister, "/post-jwt-register", user);
+    const response: ResponseType = yield call(postJwtRegister, "/post-jwt-register", user);
     yield put(registerUserSuccessful(response));
   } catch (error) {
     console.log("There was an error registering: ", error);
@@ -25,7 +28,7 @@ function* registerUser({ payload: { user } }) {
 }
 
 export function* watchUserRegister() {
-  yield takeEvery(REGISTER_USER, registerUser);
+  yield takeEvery(REGISTER_USER as any, registerUser);
 }
 
 function* accountSaga() {

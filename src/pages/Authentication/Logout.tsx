@@ -12,7 +12,7 @@ import { logoutUser } from "../../store/auth/login/reducer";
 const Logout: React.FC = () => {
   const history = useNavigate();
   const dispatch = useDispatch();
-  const [api, contextHolder] = notification.useNotification();
+  const [api] = notification.useNotification();
 
   const openNotificationWithIcon = (
     type: NotificationType,

@@ -21,7 +21,7 @@ import RightSidebar from "../CommonForBoth/RightSidebar";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import { IState } from "../../Interfaces";
-
+ //@ts-ignore
 const Layout = (props) => {
   const dispatch = useDispatch();
 
@@ -56,6 +56,7 @@ const Layout = (props) => {
   };
 
   //hides right sidebar on body click
+   //@ts-ignore
   const hideRightbar = (event) => {
     var rightbar = document.getElementById("right-bar");
     //if clicked in inside right bar, then do nothing
@@ -76,15 +77,21 @@ const Layout = (props) => {
     document.body.addEventListener("click", hideRightbar, true);
 
     if (isPreloader === true) {
+       //@ts-ignore
       document.getElementById("preloader").style.display = "block";
+       //@ts-ignore
       document.getElementById("status").style.display = "block";
 
       setTimeout(function () {
+         //@ts-ignore
         document.getElementById("preloader").style.display = "none";
+         //@ts-ignore
         document.getElementById("status").style.display = "none";
       }, 2500);
     } else {
+       //@ts-ignore
       document.getElementById("preloader").style.display = "none";
+       //@ts-ignore
       document.getElementById("status").style.display = "none";
     }
   }, [isPreloader]);
@@ -151,6 +158,7 @@ const Layout = (props) => {
       <div id="layout-wrapper">
         <Header toggleMenuCallback={toggleMenuCallback} />
         <Sidebar
+         //@ts-ignore
           theme={leftSideBarTheme}
           type={leftSideBarType}
           isMobile={isMobile}

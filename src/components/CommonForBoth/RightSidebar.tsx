@@ -41,8 +41,9 @@ import {
   leftSidebarTypes,
   leftSideBarThemeTypes,
 } from "../../constants/layout";
-
+ //@ts-ignore
 const RightSidebar = props => {
+   //@ts-ignore
   const onCloseRightBar = () => {
     const { onClose } = props;
     if (onClose) {
@@ -626,7 +627,7 @@ RightSidebar.propTypes = {
   topbarTheme: PropTypes.any,
   onClose: PropTypes.func,
 };
-
+ //@ts-ignore
 const mapStateToProps = state => {
   return { ...state.Layout };
 };

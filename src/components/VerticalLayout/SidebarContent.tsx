@@ -12,9 +12,10 @@ import withRouter from "../Common/withRouter";
 //i18n
 
 import { useCallback } from "react";
-
+{/* @ts-ignore */}
 const SidebarContent = (props) => {
   const ref = useRef();
+  {/* @ts-ignore */}
   const activateParentDropdown = useCallback((item) => {
     item.classList.add("active");
     const parent = item.parentElement;
@@ -53,7 +54,7 @@ const SidebarContent = (props) => {
     scrollElement(item);
     return false;
   }, []);
-
+{/* @ts-ignore */}
   const removeActivation = (items) => {
     for (var i = 0; i < items.length; ++i) {
       var item = items[i];
@@ -102,6 +103,7 @@ const SidebarContent = (props) => {
     const pathName = path.pathname;
     let matchingMenuItem = null;
     const ul = document.getElementById("side-menu");
+    {/* @ts-ignore */}
     const items = ul.getElementsByTagName("a");
     removeActivation(items);
 
@@ -117,6 +119,7 @@ const SidebarContent = (props) => {
   }, [path.pathname, activateParentDropdown]);
 
   useEffect(() => {
+    {/* @ts-ignore */}
     ref.current.recalculate();
   }, []);
 
@@ -129,11 +132,12 @@ const SidebarContent = (props) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     activeMenu();
   }, [activeMenu]);
-
+{/* @ts-ignore */}
   function scrollElement(item) {
     if (item) {
       const currentPosition = item.offsetTop;
       if (currentPosition > window.innerHeight) {
+        {/* @ts-ignore */}
         ref.current.getScrollElement().scrollTop = currentPosition - 300;
       }
     }
@@ -141,6 +145,7 @@ const SidebarContent = (props) => {
 
   return (
     <React.Fragment>
+      {/* @ts-ignore */}
       <SimpleBar className="h-100" ref={ref}>
         <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">

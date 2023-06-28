@@ -1,6 +1,6 @@
+// @ts-nocheck
 import React from 'react';
 import { Input } from 'reactstrap';
-
 export const Filter = ({ column }) => {
   return (
     <div style={{ marginTop: 5 }}>

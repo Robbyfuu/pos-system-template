@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import {
   Button,
   Modal,
@@ -8,10 +7,12 @@ import {
   ModalHeader,
   Table,
 } from "reactstrap"
-import img7 from "../../../assets/images/product/img-7.png"
-import img4 from "../../../assets/images/product/img-4.png"
 
-const EcommerceOrdersModal = props => {
+interface EcommerceOrdersModalProps {
+  isOpen: boolean
+  toggle: () => void
+}
+const EcommerceOrdersModal: React.FC <EcommerceOrdersModalProps> = props => {
   const { isOpen, toggle } = props
   return (
     <Modal
@@ -20,7 +21,7 @@ const EcommerceOrdersModal = props => {
       autoFocus={true}
       centered={true}
       className="exampleModal"
-      tabIndex="-1"
+      tabIndex={-1}
       toggle={toggle}
     >
       <div className="modal-content">
@@ -46,7 +47,7 @@ const EcommerceOrdersModal = props => {
                 <tr>
                   <th scope="row">
                     <div>
-                      <img src={img7} alt="" className="avatar-sm" />
+                      <img  alt="" className="avatar-sm" />
                     </div>
                   </th>
                   <td>
@@ -62,7 +63,7 @@ const EcommerceOrdersModal = props => {
                 <tr>
                   <th scope="row">
                     <div>
-                      <img src={img4} alt="" className="avatar-sm" />
+                      <img  alt="" className="avatar-sm" />
                     </div>
                   </th>
                   <td>
@@ -76,19 +77,19 @@ const EcommerceOrdersModal = props => {
                   <td>$ 145</td>
                 </tr>
                 <tr>
-                  <td colSpan="2">
+                  <td colSpan={2}>
                     <h6 className="m-0 text-end">Sub Total:</h6>
                   </td>
                   <td>$ 400</td>
                 </tr>
                 <tr>
-                  <td colSpan="2">
+                  <td colSpan={2}>
                     <h6 className="m-0 text-end">Shipping:</h6>
                   </td>
                   <td>Free</td>
                 </tr>
                 <tr>
-                  <td colSpan="2">
+                  <td colSpan={2}>
                     <h6 className="m-0 text-end">Total:</h6>
                   </td>
                   <td>$ 400</td>
@@ -107,9 +108,5 @@ const EcommerceOrdersModal = props => {
   )
 }
 
-EcommerceOrdersModal.propTypes = {
-  toggle: PropTypes.func,
-  isOpen: PropTypes.bool,
-}
 
 export default EcommerceOrdersModal

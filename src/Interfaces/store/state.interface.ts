@@ -59,11 +59,31 @@ export interface IStateProducts {
     productsPagination: IProduct[];
     loading?: boolean;
     error?: string;
+    preOrder: {
+      cart: IProduct[];
+      total: number;
+    };
     orders: IProduct[];
     pagination: {
       pageActual: number;
       limit: number;
       offset: number;
     };
+  };
+}
+export interface IEcommerceState {
+  products: IProduct[];
+  productsPagination: IProduct[];
+  orders: IProduct[];
+  preOrder: {
+    cart: IProduct[];
+    total: number;
+  };
+  error: {};
+  loading: boolean;
+  pagination: {
+    limit: number;
+    offset: number;
+    pageActual: number;
   };
 }

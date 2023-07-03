@@ -165,23 +165,23 @@ const SidebarContent = (props) => {
                 <li>
                   <Link to="/ecommerce-products">{"Products"}</Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/ecommerce-product-detail/1">
                     {"Product Detail"}
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link to="/ecommerce-orders">{"Orders"}</Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/ecommerce-customers">{"Customers"}</Link>
                 </li>
                 <li>
                   <Link to="/ecommerce-cart">{"Cart"}</Link>
-                </li>
-                <li>
+                </li> */}
+                {/* <li>
                   <Link to="/ecommerce-checkout">{"Checkout"}</Link>
-                </li>
+                </li> */}
                 <li>
                   <Link to="/ecommerce-add-product">
                     {"Add Product"}

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { notification } from "antd";
 
 import {
   Button,
   Card,
-  CardBody,  
+  CardBody,
   CardTitle,
   Col,
   Container,
@@ -13,169 +14,201 @@ import {
   Label,
   Row,
 } from "reactstrap";
-import Select from "react-select";
-import Dropzone from "react-dropzone";
+import Dropzone, { FileWithPath } from "react-dropzone";
+//GraphQL
+import { useMutation } from "urql";
+import { productsCreateMutation } from "@/src/helpers/Apollo/querys";
 
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb";
-
+interface Accept {
+  [key: string]: string[];
+}
 const EcommerceAddProduct = () => {
-  
   //meta title
-  document.title = "Add Product | Skote - Vite React Admin & Dashboard Template";
+  document.title =
+    "Agregar Producto | Punto de Ventas";
+  const [_result, executeMutation] = useMutation(productsCreateMutation);
+  const [selectedFile, setSelectedFile] = useState<FileWithPath | undefined>();
+  const [productName, setProductName] = useState("");
+  const [priceProduct, setPriceProduct] = useState("");
+  const [category, setCategory] = useState("");
+  const [measureType, setMeasureType] = useState("");
+  const [unitsAvailable, setUnitsAvailable] = useState("");
 
-  const [selectedFiles, setselectedFiles] = useState([])
-
-  const options = [
-    { value: "AK", label: "Alaska" },
-    { value: "HI", label: "Hawaii" },
-    { value: "CA", label: "California" },
-    { value: "NV", label: "Nevada" },
-    { value: "OR", label: "Oregon" },
-    { value: "WA", label: "Washington" },
-  ]
-
-  function handleAcceptedFiles(files: []) {
-    files.map(file =>
-      Object.assign(file, {
-        preview: URL.createObjectURL(file),
-         //@ts-ignore
-        formattedSize: formatBytes(file.size),
-      })
-    )
-
-    setselectedFiles(files)
+  const acceptConfig: Accept = {
+    "image/*": ["jpg", "jpeg", "png", "gif", "webp"],
+  };
+  function handleAcceptedFile(file: FileWithPath) {
+    Object.assign(file, {
+      preview: URL.createObjectURL(file),
+      formattedSize: formatBytes(file.size),
+    });
+    setSelectedFile(file);
   }
+  const handleProductNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setProductName(event.target.value);
+  };
+
+  const handlePriceProductChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setPriceProduct(event.target.value);
+  };
+
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setCategory(event.target.value);
+  };
+
+  const handleMeasureTypeChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setMeasureType(event.target.value);
+  };
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    // Realizar alguna acción con los valores guardados
+    const variables = {
+      input: {
+        productName,
+        productPrice: parseFloat(priceProduct),
+        productCategory: category,
+        productUnit: measureType,
+        productInventory: parseFloat(unitsAvailable),
+      },
+      file: selectedFile,
+    };
+
+    await executeMutation(variables).then((result) => {
+      if (result.error) {
+        notification.error({ message: result.error.message });
+      } else {
+        notification.success({ message: "Producto creado con éxito", duration: 1 });
+      }
+    });
+    setProductName("");
+    setPriceProduct("");
+    setCategory("");
+    setMeasureType("");
+    setUnitsAvailable("");
+    setSelectedFile(undefined);
+  };
 
   function formatBytes(bytes: number, decimals = 2) {
-    if (bytes === 0) return "0 Bytes"
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
   }
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          {/* Render Breadcrumb */}
           <Breadcrumbs title="Ecommerce" breadcrumbItem="Add Product" />
 
           <Row>
             <Col xs="12">
               <Card>
                 <CardBody>
-                  <CardTitle>Basic Information</CardTitle>
+                  <CardTitle>Información del Producto</CardTitle>
                   <p className="card-title-desc mb-4">
-                    Fill all information below
+                    Complete toda la información a continuación
                   </p>
 
-                  <Form>
+                  <Form onSubmit={handleSubmit}>
                     <Row>
                       <Col sm="6">
                         <div className="mb-3">
-                          <Label htmlFor="productname">Product Name</Label>
+                          <Label htmlFor="productname">Nombre Producto</Label>
                           <Input
                             id="productname"
                             name="productname"
                             type="text"
                             className="form-control"
-                            placeholder="Product Name"
+                            placeholder="Palta"
+                            value={productName}
+                            onChange={handleProductNameChange}
                           />
                         </div>
                         <div className="mb-3">
                           <Label htmlFor="manufacturername">
-                            Manufacturer Name
+                            Precio del Producto
                           </Label>
                           <Input
-                            id="manufacturername"
-                            name="manufacturername"
+                            id="priceproduct"
+                            name="priceproduct"
                             type="text"
                             className="form-control"
-                            placeholder="Manufacturer Name"
+                            placeholder="3000"
+                            value={priceProduct}
+                            onChange={handlePriceProductChange}
                           />
                         </div>
                         <div className="mb-3">
-                          <Label htmlFor="manufacturerbrand">
-                            Manufacturer Brand
+                          <Label htmlFor="manufacturername">
+                            Unidades/Kilos Disponibles
                           </Label>
                           <Input
-                            id="manufacturerbrand"
-                            name="manufacturerbrand"
+                            id="priceproduct"
+                            name="priceproduct"
                             type="text"
                             className="form-control"
-                            placeholder="Manufacturer Brand"
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <Label htmlFor="price">Price</Label>
-                          <Input
-                            id="price"
-                            name="price"
-                            type="text"
-                            className="form-control"
-                            placeholder="Price"
+                            placeholder="20"
+                            value={unitsAvailable}
+                            onChange={(e) => setUnitsAvailable(e.target.value)}
                           />
                         </div>
                       </Col>
 
                       <Col sm="6">
                         <div className="mb-3">
-                          <Label className="control-label">Category</Label>
-                          <select className="form-control select2">
-                            <option>Select</option>
-                            <option value="FA">Fashion</option>
-                            <option value="EL">Electronic</option>
+                          <Label htmlFor="manufacturerbrand">
+                            Categoría del Producto
+                          </Label>
+                          <select
+                            className="form-control select2"
+                            value={category}
+                            onChange={handleCategoryChange}
+                          >
+                            <option>Selecciona una opción</option>
+                            <option value="Fruta">Frutas</option>
+                            <option value="Abarrote">Abarrotes</option>
+                            <option value="Verdura">Verduras</option>
                           </select>
                         </div>
                         <div className="mb-3">
-                          <Label className="control-label">Features</Label>
-                          <Select
-                            classNamePrefix="select2-selection"
-                            placeholder="Choose..."
-                             //@ts-ignore
-                            title="Country"
-                            options={options}
-                            isMulti
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <Label htmlFor="productdesc">
-                            Product Description
+                          <Label htmlFor="price">
+                            Tipo de Medida del Producto
                           </Label>
-                          <textarea
-                            className="form-control mb-3"
-                            id="productdesc"
-                            rows={5}
-                            placeholder="Product Description"
-                          />
+                          <select
+                            className="form-control select2"
+                            value={measureType}
+                            onChange={handleMeasureTypeChange}
+                          >
+                            <option>Selecciona una opción</option>
+                            <option value="kg">Kiligramos</option>
+                            <option value="uni">Unidad</option>
+                          </select>
                         </div>
                       </Col>
                     </Row>
-                    <div className="d-flex flex-wrap gap-2">
-                      <Button type="submit" color="primary" className="btn ">
-                        Save Changes
-                      </Button>
-                      <Button type="submit" color="secondary" className=" ">
-                        Cancel
-                      </Button>
-                    </div>
-                  </Form>
-                </CardBody>
-              </Card>
-
-              <Card>
-                <CardBody>
-                  <CardTitle className="mb-3">Product Images</CardTitle>
-                  <Form>
+                    <CardTitle className="mb-3">Product Images</CardTitle>
                     <Dropzone
-                      onDrop={acceptedFiles => {
-                         //@ts-ignore
-                        handleAcceptedFiles(acceptedFiles)
+                      onDrop={(acceptedFiles) => {
+                        const file: FileWithPath = acceptedFiles[0];
+                        handleAcceptedFile(file);
                       }}
+                      maxFiles={1}
+                      multiple={false}
+                      accept={acceptConfig}
                     >
                       {({ getRootProps, getInputProps }) => (
                         <div className="dropzone">
@@ -195,99 +228,45 @@ const EcommerceAddProduct = () => {
                       )}
                     </Dropzone>
                     <div className="dropzone-previews mt-3" id="file-previews">
-                      {selectedFiles.map((f, i) => {
-                        return (
-                          <Card
-                            className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                            key={i + "-file"}
-                          >
-                            <div className="p-2">
-                              <Row className="align-items-center">
-                                <Col className="col-auto">
-                                  <img
-                                    data-dz-thumbnail=""
-                                    height="80"
-                                    className="avatar-sm rounded bg-light"
-                                     //@ts-ignore
-                                    alt={f.name}
-                                     //@ts-ignore
-                                    src={f.preview}
-                                  />
-                                </Col>
-                                <Col>
-                                  <Link
-                                    to="#"
-                                    className="text-muted font-weight-bold"
-                                  > {/* @ts-ignore */}
-                                    {f.name}
-                                  </Link>
-                                  <p className="mb-0">
+                      {selectedFile && (
+                        <Card
+                          className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
+                          key="file"
+                        >
+                          <div className="p-2">
+                            <Row className="align-items-center">
+                              <Col className="col-auto">
+                                <img
+                                  data-dz-thumbnail=""
+                                  height="80"
+                                  className="avatar-sm rounded bg-light"
+                                  alt={selectedFile.name}
+                                  //@ts-ignore
+                                  src={selectedFile.preview}
+                                />
+                              </Col>
+                              <Col>
+                                <Link
+                                  to="#"
+                                  className="text-muted font-weight-bold"
+                                >
+                                  {" "}
                                   {/* @ts-ignore */}
-                                    <strong>{f.formattedSize}</strong>
-                                  </p>
-                                </Col>
-                              </Row>
-                            </div>
-                          </Card>
-                        )
-                      })}
+                                  {selectedFile.name}
+                                </Link>
+                                <p className="mb-0">
+                                  {/* @ts-ignore */}
+                                  <strong>{selectedFile.formattedSize}</strong>
+                                </p>
+                              </Col>
+                            </Row>
+                          </div>
+                        </Card>
+                      )}
                     </div>
-                  </Form>
-                </CardBody>
-              </Card>
-
-              <Card>
-                <CardBody>
-                  <CardTitle>Meta Data</CardTitle>
-                  <p className="card-title-desc mb-3">
-                    Fill all information below
-                  </p>
-
-                  <Form>
-                    <Row>
-                      <Col sm={6}>
-                        <div className="mb-3">
-                          <Label htmlFor="metatitle">Meta title</Label>
-                          <Input
-                            id="metatitle"
-                            name="productname"
-                            type="text"
-                            className="form-control"
-                            placeholder="Metatitle"
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <Label htmlFor="metakeywords">Meta Keywords</Label>
-                          <Input
-                            id="metakeywords"
-                            name="manufacturername"
-                            type="text"
-                            className="form-control"
-                            placeholder="Meta Keywords"
-                          />
-                        </div>
-                      </Col>
-
-                      <Col sm={6}>
-                        <div className="mb-3">
-                          <Label htmlFor="metadescription">
-                            Meta Description
-                          </Label>
-                          <textarea
-                            className="form-control"
-                            id="metadescription"
-                            rows={5}
-                            placeholder="Meta Description"
-                          />
-                        </div>
-                      </Col>
-                    </Row>
-                    <div className="d-flex flex-wrap gap-2">
-                      <Button type="submit" color="primary">
-                        Save Changes
-                      </Button>
-                      <Button type="submit" color="secondary">
-                        Cancel
+                    <div className="d-flex flex-wrap gap-2 mt-3">
+                      <Button type="submit" color="primary" className="btn ">
+                        Agregar Producto
                       </Button>
                     </div>
                   </Form>
@@ -298,7 +277,7 @@ const EcommerceAddProduct = () => {
         </Container>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default EcommerceAddProduct
+export default EcommerceAddProduct;

@@ -135,12 +135,12 @@ function EcommerceOrder() {
     orders: state.ecommerce.orders,
   }));
 
-  useEffect(() => {
-    if (orders && !orders.length) {
-       //@ts-ignore
-      dispatch(onGetOrders());
-    }
-  }, [dispatch, orders]);
+  // useEffect(() => {
+  //   if (orders && !orders.length) {
+  //      //@ts-ignore
+  //     dispatch(onGetOrders());
+  //   }
+  // }, [dispatch, orders]);
 
   useEffect(() => {
     setOrderList(orders);

@@ -16,7 +16,7 @@ import Dashboard from "../pages/Dashboard/index";
 // // //Ecommerce Pages
 import EcommerceProducts from "../pages/Ecommerce/EcommerceProducts/index";
 // import EcommerceProductDetail from "../pages/Ecommerce/EcommerceProducts/EcommerceProductDetail";
-// import EcommerceOrders from "../pages/Ecommerce/EcommerceOrders/index";
+import EcommerceOrders from "../pages/Ecommerce/EcommerceOrders/index";
 // import EcommerceCustomers from "../pages/Ecommerce/EcommerceCustomers/index";
 // import EcommerceCart from "../pages/Ecommerce/EcommerceCart";
 import EcommerceCheckout from "../pages/Ecommerce/EcommerceCheckout";
@@ -37,7 +37,7 @@ const authProtectedRoutes = [
   //   component: <EcommerceProductDetail />,
   // },
   { path: "/ecommerce-products", component: <EcommerceProducts /> },
-  // { path: "/ecommerce-orders", component: <EcommerceOrders /> },
+  { path: "/ecommerce-orders", component: <EcommerceOrders /> },
   // { path: "/ecommerce-customers", component: <EcommerceCustomers /> },
   // { path: "/ecommerce-cart", component: <EcommerceCart /> },
   { path: "/ecommerce-checkout", component: <EcommerceCheckout /> },

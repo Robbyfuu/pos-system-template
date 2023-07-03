@@ -1,29 +1,56 @@
+import { IProduct } from "@/src/Interfaces";
+import { createSlice } from "@reduxjs/toolkit";
 
-import { createSlice } from '@reduxjs/toolkit';
-
-const initialState = {
+interface IEcommerceState {
+  products: IProduct[];
+  productsPagination: IProduct[];
+  orders: IProduct[];
+  preOrder: {
+    cart: IProduct[];
+    total: number;
+  };
+  error: {};
+  loading: boolean;
+  pagination: {
+    limit: number;
+    offset: number;
+    pageActual: number;
+  };
+}
+const initialState: IEcommerceState = {
   products: [],
   productsPagination: [],
   orders: [],
+  preOrder: {
+    cart: [],
+    total: 0,
+  },
   error: {},
   loading: false,
   pagination: {
     limit: 9,
     offset: 0,
     pageActual: 1,
-  }
+  },
 };
+interface IPreOrder{
+  cartItem: IProduct[],
+  totalPrice: number
+}
 
 const ecommerceSlice = createSlice({
-  name: 'ecommerce',
+  name: "ecommerce",
   initialState,
   reducers: {
-    getProducts (state) {
+    getProducts(state) {
       state.loading = true;
     },
     getProductsSuccess(state, action) {
-      state.products = action.payload;
-      // state.productsPagination = action.payload
+      state.products = action.payload.products;
+      // state.productsPagination = action.payload.products;
+      state.loading = false;
+      //cargar los primeros 9 productos
+      state.productsPagination = action.payload.products.slice(0, 9);
     },
     getProductsPagination(state, action) {
       const pageNumber = action.payload;
@@ -38,7 +65,7 @@ const ecommerceSlice = createSlice({
     getProductsFail(state, action) {
       state.error = action.payload;
     },
-    getOrders (state, _action) {
+    getOrders(state, _action) {
       state.loading = true;
     },
     getOrdersSuccess(state, action) {
@@ -59,11 +86,18 @@ const ecommerceSlice = createSlice({
     deleteOrderSuccess(state, action) {
       state.orders = state.orders.filter(
         // @ts-ignore
-        order => order.id.toString() !== action.payload.toString()
+        (order) => order.id.toString() !== action.payload.toString()
       );
     },
     deleteOrderFail(state, action) {
       state.error = action.payload;
+    },
+    addPreOrden(state, action) {
+      const cartState = action.payload as IPreOrder;
+      console.log(cartState)
+
+      state.preOrder.cart =(cartState.cartItem)
+      state.preOrder.total = cartState.totalPrice
     },
   },
 });
@@ -80,6 +114,7 @@ export const {
   addOrderFail,
   deleteOrderSuccess,
   deleteOrderFail,
+  addPreOrden,
 } = ecommerceSlice.actions;
 
 export default ecommerceSlice.reducer;

@@ -1,24 +1,17 @@
-
-
-
 import React, { useEffect, useMemo, useState } from "react";
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+
+// import { Link } from "react-router-dom";
 import { isEmpty } from "lodash";
 import "bootstrap/dist/css/bootstrap.min.css";
 import TableContainer from "../../../components/Common/TableContainer";
-import * as Yup from "yup";
-import { useFormik } from "formik";
 
 //import components
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
-import DeleteModal from "../../../components/Common/DeleteModal";
-
+import { Row as RowType } from 'react-table';
 
 
 import {
   OrderId,
-  BillingName,
   Date,
   Total,
   PaymentStatus,
@@ -27,23 +20,23 @@ import {
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
+
+import { useQuerys } from "@/src/helpers/Apollo";
+import { ordersQuery } from "@/src/helpers/Apollo/querys";
 import EcommerceOrdersModal from "./EcommerceOrdersModal";
 
 import {
   Button,
   Col,
   Row,
-  UncontrolledTooltip,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Form,
-  Input,
-  FormFeedback,
-  Label,
   Card,
   CardBody,
 } from "reactstrap";
+import {
+  getOrders,
+  getOrdersFail,
+  getOrdersSuccess,
+} from "@/src/store/e-commerce/reducer";
 
 function EcommerceOrder() {
   //meta title
@@ -52,96 +45,35 @@ function EcommerceOrder() {
   const [modal, setModal] = useState(false);
   const [modal1, setModal1] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
- //@ts-ignore
+  //@ts-ignore
   const [orderList, setOrderList] = useState([]);
   const [order, setOrder] = useState(null);
 
-  // validation
-  const validation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
-    enableReinitialize: true,
-
-    initialValues: {
-       //@ts-ignore
-      orderId: (order && order.orderId) || "",
-       //@ts-ignore
-      billingName: (order && order.billingName) || "",
-       //@ts-ignore
-      orderdate: (order && order.orderdate) || "",
-       //@ts-ignore
-      total: (order && order.total) || "",
-       //@ts-ignore
-      paymentStatus: (order && order.paymentStatus) || "Paid",
-       //@ts-ignore
-      badgeclass: (order && order.badgeclass) || "success",
-       //@ts-ignore
-      paymentMethod: (order && order.paymentMethod) || "Mastercard",
-    },
-    validationSchema: Yup.object({
-      orderId: Yup.string()
-        .matches(/[0-9\.\-\s+\/()]+/, "Please Enter Valid Order Id")
-        .required("Please Enter Your Order Id"),
-      billingName: Yup.string().required("Please Enter Your Billing Name"),
-      orderdate: Yup.string().required("Please Enter Your Order Date"),
-      total: Yup.string()
-        .matches(/[0-9\.\-\s+\/()]+/, "Please Enter Valid Amount")
-        .required("Total Amount"),
-      paymentStatus: Yup.string().required("Please Enter Your Payment Status"),
-      badgeclass: Yup.string().required("Please Enter Your Badge Class"),
-      paymentMethod: Yup.string().required("Please Enter Your Payment Method"),
-    }),
-    onSubmit: (values) => {
-      if (isEdit) {
-        const updateOrder = {
-           //@ts-ignore
-          id: order ? order.id : 0,
-          orderId: values.orderId,
-          billingName: values.billingName,
-          orderdate: values.orderdate,
-          total: values.total,
-          paymentStatus: values.paymentStatus,
-          paymentMethod: values.paymentMethod,
-          badgeclass: values.badgeclass,
-        };
-        // update order
-         //@ts-ignore
-        dispatch(onUpdateOrder(updateOrder));
-        validation.resetForm();
-      } else {
-        const newOrder = {
-          id: Math.floor(Math.random() * (30 - 20)) + 20,
-          orderId: values["orderId"],
-          billingName: values["billingName"],
-          orderdate: values["orderdate"],
-          total: values["total"],
-          paymentStatus: values["paymentStatus"],
-          paymentMethod: values["paymentMethod"],
-          badgeclass: values["badgeclass"],
-        };
-        // save new order
-         //@ts-ignore
-        dispatch(onAddNewOrder(newOrder));
-        validation.resetForm();
-      }
-      toggle();
-    },
-  });
-
-  const toggleViewModal = () => setModal1(!modal1);
-
   const dispatch = useDispatch();
+
+  const orderResult = useQuerys(ordersQuery);
+
+
+  const toggleViewModal = (order? :any) => {
+    setModal1(!modal1);
+    setOrder(order);
+  };
+
   const { orders } = useSelector((state) => ({
-     //@ts-ignore
+    //@ts-ignore
     orders: state.ecommerce.orders,
   }));
 
-  // useEffect(() => {
-  //   if (orders && !orders.length) {
-  //      //@ts-ignore
-  //     dispatch(onGetOrders());
-  //   }
-  // }, [dispatch, orders]);
-
+  useEffect(() => {
+    if (orderResult && orderResult.data !== undefined) {
+      dispatch(getOrders());
+      if (!orderResult.fetching && !orderResult.error) {
+        dispatch(getOrdersSuccess(orderResult.data.orders));
+      } else if (orderResult.error) {
+        dispatch(getOrdersFail(orderResult.error));
+      }
+    }
+  }, [orderResult?.data]);
   useEffect(() => {
     setOrderList(orders);
   }, [orders]);
@@ -161,12 +93,12 @@ function EcommerceOrder() {
       setModal(true);
     }
   };
- //@ts-ignore
+  //@ts-ignore
   const handleOrderClick = (arg) => {
     const order = arg;
-    
+
     setOrder({
-       //@ts-ignore
+      //@ts-ignore
       id: order.id,
       orderId: order.orderId,
       billingName: order.billingName,
@@ -183,34 +115,19 @@ function EcommerceOrder() {
   };
 
   //delete order
-  const [deleteModal, setDeleteModal] = useState(false);
- //@ts-ignore
-  const onClickDelete = (order) => {
-    setOrder(order);
-    setDeleteModal(true);
-  };
 
-  const handleDeleteOrder = () => {
-     //@ts-ignore
-    if (order && order.id) {
-       //@ts-ignore
-      dispatch(onDeleteOrder(order.id));
-      setDeleteModal(false);
-      //@ts-ignore
-      setOrder("");
-    }
-  };
   const handleOrderClicks = () => {
     setOrderList([]);
     setIsEdit(false);
     toggle();
   };
+  console.log({ orders });
 
   const columns = useMemo(
     () => [
       {
-        Header: "Order ID",
-        accessor: "orderId",
+        Header: "N° de Orden",
+        accessor: "orderNumber",
         width: "150px",
         style: {
           textAlign: "center",
@@ -223,16 +140,16 @@ function EcommerceOrder() {
         },
       },
       {
-        Header: "Billing Name",
-        accessor: "billingName",
+        Header: "Vendedor",
+        accessor: "seller.firtsName",
         filterable: true,
         Cell: (cellProps: any) => {
-          return <BillingName {...cellProps} />;
+          return <PaymentStatus {...cellProps} />;
         },
       },
       {
-        Header: "Date",
-        accessor: "orderdate",
+        Header: "Fecha",
+        accessor: "createdAt",
         filterable: true,
         Cell: (cellProps: any) => {
           return <Date {...cellProps} />;
@@ -247,71 +164,26 @@ function EcommerceOrder() {
         },
       },
       {
-        Header: "Payment Status",
-        accessor: "paymentStatus",
-        filterable: true,
-        Cell: (cellProps: any) => {
-          return <PaymentStatus {...cellProps} />;
-        },
-      },
-      {
-        Header: "Payment Method",
+        Header: "Metodo de Pago",
         accessor: "paymentMethod",
         Cell: (cellProps: any) => {
           return <PaymentMethod {...cellProps} />;
         },
       },
       {
-        Header: "View Details",
+        Header: "Ver Detalles",
         accessor: "view",
         disableFilters: true,
-        Cell: () => {
+        Cell: ({row}: { row: RowType }) => {
           return (
             <Button
               type="button"
               color="primary"
               className="btn-sm btn-rounded"
-              onClick={toggleViewModal}
+              onClick={()=>toggleViewModal(row.original)}
             >
               View Details
             </Button>
-          );
-        },
-      },
-      {
-        Header: "Action",
-        accessor: "action",
-        disableFilters: true,
-        Cell: (cellProps: any) => {
-          return (
-            <div className="d-flex gap-3">
-              <Link
-                to="#"
-                className="text-success"
-                onClick={() => {
-                  const orderData = cellProps.row.original;
-                  handleOrderClick(orderData);
-                }}
-              >
-                <i className="mdi mdi-pencil font-size-18" id="edittooltip" />
-                <UncontrolledTooltip placement="top" target="edittooltip">
-                  Edit
-                </UncontrolledTooltip>
-              </Link>
-              <Link
-                to="#"
-                className="text-danger"
-                onClick={() => {
-                  const orderData = cellProps.row.original;
-                  onClickDelete(orderData);
-                }}
-              >
-                <i className="mdi mdi-delete font-size-18" id="deletetooltip" />
-                <UncontrolledTooltip placement="top" target="deletetooltip">
-                  Delete
-                </UncontrolledTooltip>
-              </Link>
-            </div>
           );
         },
       },
@@ -321,12 +193,7 @@ function EcommerceOrder() {
 
   return (
     <React.Fragment>
-      <EcommerceOrdersModal isOpen={modal1} toggle={toggleViewModal} />
-      <DeleteModal
-        show={deleteModal}
-        onDeleteClick={handleDeleteOrder}
-        onCloseClick={() => setDeleteModal(false)}
-      />
+      <EcommerceOrdersModal isOpen={modal1} toggle={toggleViewModal} order={order} />
       <div className="page-content">
         <div className="container-fluid">
           <Breadcrumbs title="Ecommerce" breadcrumbItem="Orders" />
@@ -347,176 +214,11 @@ function EcommerceOrder() {
               </Card>
             </Col>
           </Row>
-          <Modal isOpen={modal} toggle={toggle}>
-            <ModalHeader toggle={toggle} tag="h4">
-              {!!isEdit ? "Edit Order" : "Add Order"}
-            </ModalHeader>
-            <ModalBody>
-              <Form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  validation.handleSubmit();
-                  return false;
-                }}
-              >
-                <Row>
-                  <Col className="col-12">
-                    <div className="mb-3">
-                      <Label className="form-label">Order Id</Label>
-                      <Input
-                        name="orderId"
-                        type="text"
-                        placeholder="Insert Order Id"
-                        onChange={validation.handleChange}
-                        onBlur={validation.handleBlur}
-                        value={validation.values.orderId || ""}
-                        invalid={
-                          validation.touched.orderId &&
-                          validation.errors.orderId
-                            ? true
-                            : false
-                        }
-                      />
-                      {validation.touched.orderId &&
-                      validation.errors.orderId ? (
-                        <FormFeedback type="invalid">
-                          {validation.errors.orderId}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-                    <div className="mb-3">
-                      <Label className="form-label">Billing Name</Label>
-                      <Input
-                        name="billingName"
-                        type="text"
-                        placeholder="Insert Billing Name"
-                        validate={{
-                          required: { value: true },
-                        }}
-                        onChange={validation.handleChange}
-                        onBlur={validation.handleBlur}
-                        value={validation.values.billingName || ""}
-                        invalid={
-                          validation.touched.billingName &&
-                          validation.errors.billingName
-                            ? true
-                            : false
-                        }
-                      />
-                      {validation.touched.billingName &&
-                      validation.errors.billingName ? (
-                        <FormFeedback type="invalid">
-                          {validation.errors.billingName}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-                    <div className="mb-3">
-                      <Label className="form-label">Order Date</Label>
-                      <Input
-                        name="orderdate"
-                        type="date"
-                        // value={orderList.orderdate || ""}
-                        placeholder="Insert Order Date"
-                        onChange={validation.handleChange}
-                        onBlur={validation.handleBlur}
-                        value={validation.values.orderdate || ""}
-                        invalid={
-                          validation.touched.orderdate &&
-                          validation.errors.orderdate
-                            ? true
-                            : false
-                        }
-                      />
-                      {validation.touched.orderdate &&
-                      validation.errors.orderdate ? (
-                        <FormFeedback type="invalid">
-                          {validation.errors.orderdate}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-                    <div className="mb-3">
-                      <Label className="form-label">Total</Label>
-                      <Input
-                        name="total"
-                        placeholder="Insert Total Amount"
-                        type="text"
-                        onChange={validation.handleChange}
-                        onBlur={validation.handleBlur}
-                        value={validation.values.total || ""}
-                        invalid={
-                          validation.touched.total && validation.errors.total
-                            ? true
-                            : false
-                        }
-                      />
-                      {validation.touched.total && validation.errors.total ? (
-                        <FormFeedback type="invalid">
-                          {validation.errors.total}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-                    <div className="mb-3">
-                      <Label className="form-label">Payment Status</Label>
-                      <Input
-                        name="paymentStatus"
-                        type="select"
-                        placeholder="Insert Payment Status"
-                        className="form-select"
-                        onChange={validation.handleChange}
-                        onBlur={validation.handleBlur}
-                        value={validation.values.paymentStatus || ""}
-                      >
-                        <option>Paid</option>
-                        <option>Chargeback</option>
-                        <option>Refund</option>
-                      </Input>
-                      {validation.touched.paymentStatus &&
-                      validation.errors.paymentStatus ? (
-                        <FormFeedback type="invalid">
-                          {validation.errors.paymentStatus}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-                    <div className="mb-3">
-                      <Label className="form-label">Payment Method</Label>
-                      <Input
-                        name="paymentMethod"
-                        type="select"
-                        className="form-select"
-                        onChange={validation.handleChange}
-                        onBlur={validation.handleBlur}
-                        value={validation.values.paymentMethod || ""}
-                      >
-                        <option>Mastercard</option>
-                        <option>Visa</option>
-                        <option>Paypal</option>
-                        <option>COD</option>
-                      </Input>
-                    </div>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <div className="text-end">
-                      <button
-                        type="submit"
-                        className="btn btn-success save-user"
-                      >
-                        Save
-                      </button>
-                    </div>
-                  </Col>
-                </Row>
-              </Form>
-            </ModalBody>
-          </Modal>
         </div>
       </div>
     </React.Fragment>
   );
 }
-EcommerceOrder.propTypes = {
-  preGlobalFilteredRows: PropTypes.any,
-};
+
 
 export default EcommerceOrder;

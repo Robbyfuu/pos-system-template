@@ -1,5 +1,6 @@
 import { IProduct } from "@/src/Interfaces";
 import { createSlice } from "@reduxjs/toolkit";
+import { addOrderSuccess } from "../e-commerce/reducer";
 
 interface ICart {
   cart: IProduct[];
@@ -107,6 +108,11 @@ const cartSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(addOrderSuccess, (state) => {
+      state.cart = [];
+    });
+  }
 });
 
 export const {

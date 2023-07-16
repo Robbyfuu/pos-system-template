@@ -2,12 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
  //@ts-ignore
 import { Badge } from "reactstrap";
+import { DateTime} from "luxon";
+import { moneyFormatter } from "@/src/common/functions";
 
-// const formateDate = (date, format) => {
-//   const dateFormat = format ? format : "DD MMM Y";
-//   const date1 = moment(new Date(date)).format(dateFormat);
-//   return date1;
-// };
+const formateDate = (date: string, format?: string) => {
+  const dateFormat = format ? format : "dd MMMM yyyy";
+  const date1 = DateTime.fromISO(date).setLocale("es").toFormat(dateFormat);
+  return date1;
+}
  //@ts-ignore
 const toLowerCase1 = (str) => {
   return str === "" || str === undefined ? "" : str.toLowerCase();
@@ -26,11 +28,11 @@ const BillingName = (cell) => {
 };
  //@ts-ignore
 const Date = (cell) => {
-  return cell.value ? cell.value : "";
+  return cell.value ? <span>{formateDate(cell.value)}</span> : <span></span>;;
 };
  //@ts-ignore
 const Total = (cell) => {
-  return cell.value ? cell.value : "";
+  return cell.value ? <span>{moneyFormatter(cell.value, '$')}</span>  : <span></span>;
 };
  //@ts-ignore
 const PaymentStatus = (cell) => {
@@ -38,9 +40,9 @@ const PaymentStatus = (cell) => {
     <div
       className={
         "badge font-size-12 badge-soft-" +
-        (cell.value === "Paid"
+        (cell.value === "pendiente"
           ? "success"
-          : "danger" && cell.value === "Refund"
+          : "danger" && cell.value === "efectivo"
           ? "warning"
           : "danger")
       }
@@ -59,9 +61,9 @@ const PaymentMethod = (cell) => {
         className={
           cell.value === "Paypal"
             ? "fab fa-cc-paypal me-1"
-            : "" || cell.value === "COD"
+            : "" || cell.value === "efectivo"
             ? "fab fas fa-money-bill-alt me-1"
-            : "" || cell.value === "Mastercard"
+            : "" || cell.value === "debito/credito"
             ? "fab fa-cc-mastercard me-1"
             : "" || cell.value === "Visa"
             ? "fab fa-cc-visa me-1"

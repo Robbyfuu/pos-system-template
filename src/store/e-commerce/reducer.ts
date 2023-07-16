@@ -65,7 +65,7 @@ const ecommerceSlice = createSlice({
     getProductsFail(state, action) {
       state.error = action.payload;
     },
-    getOrders(state, _action) {
+    getOrders(state) {
       state.loading = true;
     },
     getOrdersSuccess(state, action) {
@@ -76,9 +76,12 @@ const ecommerceSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    addOrderSuccess(state, action) {
-      // @ts-ignore
-      state.orders.push(action.payload);
+    addOrderSuccess(state,action) {
+      action.payload.navigate('/ecommerce-products')
+      state.loading = false;
+    },
+    addOrder(state){
+      state.loading = true
     },
     addOrderFail(state, action) {
       state.error = action.payload;
@@ -110,6 +113,7 @@ export const {
   getOrders,
   getOrdersSuccess,
   getOrdersFail,
+  addOrder,
   addOrderSuccess,
   addOrderFail,
   deleteOrderSuccess,

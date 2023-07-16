@@ -133,7 +133,7 @@ const EcommerceProducts: React.FC<ProductsProps> = (_props) => {
         <Container fluid>
           <Breadcrumbs title="Nombre Negocio" breadcrumbItem="Productos" />
           <Row>
-            <Col lg="7">
+            <Col lg="6">
               <Row>
                 {!isEmpty(productList) &&
                   productList?.map((product, key) => (
@@ -232,7 +232,7 @@ const EcommerceProducts: React.FC<ProductsProps> = (_props) => {
                 </Col>
               </Row>
             </Col>
-            <Col lg="5">
+            <Col lg="6">
               <Card>
                 <CardBody>
                   <CardTitle className="mb-4">Detalle de Productos</CardTitle>

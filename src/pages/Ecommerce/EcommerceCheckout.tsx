@@ -18,33 +18,53 @@ import {
   Button,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-
+import { NumericFormat } from "react-number-format";
 import classnames from "classnames";
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import {
+  addOrderSuccess,
+  addOrder,
+  addOrderFail,
+} from "@/src/store/e-commerce/reducer";
+//GraphQL
+import { useMutation } from "urql";
+import { orderCreateMutation } from "@/src/helpers/Apollo/querys";
 
 //Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb";
-import { useSelector } from "react-redux";
 import { moneyFormatter } from "@/src/common/functions";
 import { IStateProducts } from "@/src/Interfaces";
+import withRouter from "@/src/components/Common/withRouter";
 
-const EcommerceCheckout = () => {
+import { CheckoutProps } from "@/src/Interfaces";
+
+const EcommerceCheckout: React.FC<CheckoutProps> = (prop) => {
   //meta title
   document.title = "Checkout | Punto de Ventas";
-
+  const dispatch = useDispatch();
   const [activeTab, setactiveTab] = useState("1");
   const [selectPayment, setSelectPayment] = useState<string | undefined>("1");
-  const [moneyCash, setMoneyCash] = useState<number>(0);
+  const [moneyCash, setMoneyCash] = useState<string>("");
   const [changeMoney, setChangeMoney] = useState<number>(0);
   const [operationNumber, setOperationNumber] = useState<string>("");
   const [disbleButtonConfirm, setDisbleButtonConfirm] = useState<boolean>();
+  const [_result, executeMutation] = useMutation(orderCreateMutation);
 
   const { cartItems, totalAmount } = useSelector((state: IStateProducts) => ({
     cartItems: state.ecommerce.preOrder.cart,
     totalAmount: state.ecommerce.preOrder.total,
   }));
-
+  const numberFormatter = (text: string) => {
+    return text.replaceAll(".", "");
+  };
   React.useEffect(() => {
-    setChangeMoney(moneyCash - totalAmount);
+    const parseMoneyCash = parseInt(
+      numberFormatter(
+        moneyCash.slice(moneyCash.lastIndexOf("$") + 1, moneyCash.length)
+      )
+    );
+    setChangeMoney(parseMoneyCash - totalAmount);
   }, [moneyCash]);
   React.useEffect(() => {
     if (changeMoney >= 0 || operationNumber.length > 0) {
@@ -53,6 +73,33 @@ const EcommerceCheckout = () => {
       setDisbleButtonConfirm(true);
     }
   }, [changeMoney, operationNumber]);
+
+  const handleCreateOrder = async (event: React.FormEvent) => {
+    event.preventDefault();
+    dispatch(addOrder());
+    const products = cartItems.map((item) => {
+      return {
+        id: item.id,
+        cartQuantity: parseFloat(item.cartQuantity?.toFixed(3)!),
+      };
+    });
+    console.log({ products });
+    const order = {
+      createOrderInput: {
+        paymentMethod: selectPayment === "1" ? "debito/credito" : "efectivo",
+        total: Math.round(totalAmount),
+        products: products,
+      },
+    };
+    await executeMutation(order).then((result) => {
+      if (result.error) {
+        dispatch(addOrderFail(result.error.message));
+      } else {
+        console.log("result", result);
+        dispatch(addOrderSuccess({navigate:prop.router.navigate}));
+      }
+    });
+  };
   return (
     <React.Fragment>
       <div className="page-content">
@@ -72,7 +119,7 @@ const EcommerceCheckout = () => {
                       }}
                     >
                       <i className="bx bx-money d-block check-nav-icon mt-4 mb-2" />
-                      <p className="fw-bold mb-4">Payment Info</p>
+                      <p className="fw-bold mb-4">Pago</p>
                     </NavLink>
                   </NavItem>
                   <NavItem>
@@ -84,7 +131,7 @@ const EcommerceCheckout = () => {
                       disabled
                     >
                       <i className="bx bx-badge-check d-block check-nav-icon mt-4 mb-2" />
-                      <p className="fw-bold mb-4">Confirmation</p>
+                      <p className="fw-bold mb-4">Confirmación</p>
                     </NavLink>
                   </NavItem>
                 </Nav>
@@ -141,7 +188,7 @@ const EcommerceCheckout = () => {
                                 htmlFor="customRadioInline3"
                               >
                                 <i className="far fa-money-bill-alt me-1 font-size-20 align-top" />{" "}
-                                Cash on Delivery
+                                Efectivo
                               </Label>
                             </div>
                           </div>
@@ -215,14 +262,17 @@ const EcommerceCheckout = () => {
                                   <Label htmlFor="cardnumberInput">
                                     Ingrese el Monto en Efectivo
                                   </Label>
-                                  <Input
-                                    type="text"
+                                  <NumericFormat
                                     className="form-control"
                                     id="cardnumberInput"
-                                    placeholder="000000"
+                                    placeholder="Ingrese el Monto en Efectivo"
+                                    type="text"
+                                    prefix="$"
+                                    thousandSeparator="."
+                                    decimalSeparator=","
                                     value={moneyCash}
                                     onChange={(e) => {
-                                      setMoneyCash(parseFloat(e.target.value));
+                                      setMoneyCash(e.target.value);
                                     }}
                                   />
                                 </FormGroup>
@@ -320,28 +370,12 @@ const EcommerceCheckout = () => {
                                     </h3>
                                   </div>
                                   <div className="counterCart">
-                                    {/*               <div
-                className="btnCart"
-                onClick={() => {
-                  handleUpdateQuantitySub(product);
-                }}
-              >
-                -
-              </div> */}
                                     <div className="countCart">
                                       {product.productUnit === "kg"
                                         ? product.cartQuantity?.toFixed(2)
                                         : product.cartQuantity}{" "}
                                       {product.productUnit}
                                     </div>
-                                    {/*               <div
-                className="btnCart"
-                onClick={() => {
-                  handleUpdateQuantityAdd(product);
-                }}
-              >
-                +
-              </div> */}
                                   </div>
                                   <div className="pricesCart">
                                     <div className="amountCart">
@@ -352,14 +386,6 @@ const EcommerceCheckout = () => {
                                         "$"
                                       )}
                                     </div>
-                                    {/*               <div
-                className="removeCart"
-                onClick={() => handleRemoveFromCart(product)}
-              >
-                <u>
-                  <i className="mdi mdi-trash-can font-size-18" />
-                </u>
-              </div> */}
                                   </div>
                                 </div>
                               </React.Fragment>
@@ -383,13 +409,14 @@ const EcommerceCheckout = () => {
                   <Col sm="6">
                     <div className="text-sm-end">
                       {activeTab === "2" ? (
-                        <Link
-                          to="/ecommerce-checkout"
+                        <Button
+
                           className="btn btn-success"
+                          onClick={handleCreateOrder}
                         >
                           <i className="mdi mdi-truck-fast me-1" /> Confirmar
                           Compra
-                        </Link>
+                        </Button>
                       ) : null}
                     </div>
                   </Col>
@@ -403,4 +430,4 @@ const EcommerceCheckout = () => {
   );
 };
 
-export default EcommerceCheckout;
+export default withRouter(EcommerceCheckout);

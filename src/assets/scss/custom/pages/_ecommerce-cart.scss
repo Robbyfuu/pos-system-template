@@ -11,6 +11,10 @@ $bg-color: #d9d9d9;
   background-color: #ffffff;
   border-radius: 20px;
   box-shadow: 0px 10px 20px $shadow-color;
+
+  @media (max-width: 768px) {
+    width: 90%;
+  }
 }
 
 .HeaderCart,
@@ -21,6 +25,11 @@ $bg-color: #d9d9d9;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+  }
 }
 
 .HeadingCart,
@@ -32,6 +41,10 @@ $bg-color: #d9d9d9;
 .total-amountCart,
 .buttonCart {
   color: $main-color;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 }
 
 .HeadingCart {
@@ -46,22 +59,39 @@ $bg-color: #d9d9d9;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    text-align: left;
+  }
 }
 
 .ActionCart {
   text-align: right;
   color: $red-color;
   border-bottom: 1px solid $red-color;
+
+  @media (max-width: 768px) {
+    text-align: left;
+  }
 }
 
 .image-boxCart {
   width: 15%;
   text-align: center;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }
 
 .aboutCart {
   height: 100%;
   width: 24%;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
 
 .titleCart,
@@ -74,6 +104,10 @@ $bg-color: #d9d9d9;
   padding-top: 10px;
   line-height: 20px;
   font-size: 16px;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 }
 
 .subtitleCart,
@@ -82,6 +116,10 @@ $bg-color: #d9d9d9;
   font-weight: 400;
   color: $secondary-color;
   line-height: 10px;
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+  }
 }
 
 .counterCart,
@@ -102,35 +140,61 @@ $bg-color: #d9d9d9;
   font-size: 20px;
   font-weight: 900;
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
 }
 
 .countCart {
   font-size: 16px;
   font-weight: 400;
-  // margin-left: 5px;
-  // margin-right: 5px;
   width: 75px;
   text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    width: 60px;
+  }
 }
 
 .pricesCart {
   height: 100%;
   text-align: right;
+
+  @media (max-width: 768px) {
+    text-align: left;
+  }
 }
 
 .amountCart {
   padding-top: 20px;
   font-size: 18px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding-top: 10px;
+  }
 }
 
 .saveCart {
   padding-top: 5px;
   color: $blue-color;
+
+  @media (max-width: 768px) {
+    padding-top: 2px;
+  }
 }
 
 .removeCart {
   padding-top: 5px;
   color: $red-color;
+
+  @media (max-width: 768px) {
+    padding-top: 2px;
+  }
 }
 
 .pad {
@@ -141,22 +205,41 @@ $bg-color: #d9d9d9;
   width: 66%;
   float: right;
   margin-right: 5%;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-right: 0;
+  }
 }
 
 .checkoutCart {
   float: right;
   margin-right: 5%;
   width: 28%;
+
+  @media (max-width: 768px) {
+    float: none;
+    margin-right: 0;
+    width: 100%;
+  }
 }
 
 .SubtotalCart {
   font-size: 16px;
   font-weight: 500;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 }
 
 .total-amountCart {
   font-size: 20px;
   font-weight: 900;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
 }
 
 .buttonCart {
@@ -169,4 +252,10 @@ $bg-color: #d9d9d9;
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    height: 30px;
+    margin-top: 5px;
+  }
 }

@@ -32,7 +32,7 @@ export function useQuerys(query: TypedDocumentNode<any, AnyVariables>, variables
         requestPolicy: 'cache-and-network',
       });
       const { data, fetching, error } = result;
-      return { data, fetching, error };
+      return { data , fetching, error };
     }
     catch(error){
       console.log({error})

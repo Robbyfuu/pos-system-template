@@ -1,4 +1,5 @@
-import React from "react"
+import { moneyFormatter } from "@/src/common/functions";
+import React from "react";
 import {
   Button,
   Modal,
@@ -6,14 +7,17 @@ import {
   ModalFooter,
   ModalHeader,
   Table,
-} from "reactstrap"
+} from "reactstrap";
 
 interface EcommerceOrdersModalProps {
-  isOpen: boolean
-  toggle: () => void
+  isOpen: boolean;
+  toggle: () => void;
+  order: any;
 }
-const EcommerceOrdersModal: React.FC <EcommerceOrdersModalProps> = props => {
-  const { isOpen, toggle } = props
+const EcommerceOrdersModal: React.FC<EcommerceOrdersModalProps> = (props) => {
+  const { isOpen, toggle, order } = props;
+
+  console.log("EcommerceOrdersModalProps", props);
   return (
     <Modal
       isOpen={isOpen}
@@ -25,13 +29,15 @@ const EcommerceOrdersModal: React.FC <EcommerceOrdersModalProps> = props => {
       toggle={toggle}
     >
       <div className="modal-content">
-        <ModalHeader toggle={toggle}>Order Details</ModalHeader>
+        <ModalHeader toggle={toggle}>Detalla de la Orden</ModalHeader>
         <ModalBody>
           <p className="mb-2">
-            Product id: <span className="text-primary">#SK2540</span>
+            Número de Orden:{" "}
+            <span className="text-primary">{order?.orderNumber}</span>
           </p>
           <p className="mb-4">
-            Billing Name: <span className="text-primary">Neal Matthews</span>
+            Vendedor:{" "}
+            <span className="text-primary">{order?.seller?.firtsName}</span>
           </p>
 
           <div className="table-responsive">
@@ -44,55 +50,30 @@ const EcommerceOrdersModal: React.FC <EcommerceOrdersModalProps> = props => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th scope="row">
-                    <div>
-                      <img  alt="" className="avatar-sm" />
-                    </div>
-                  </th>
-                  <td>
-                    <div>
-                      <h5 className="text-truncate font-size-14">
-                        Wireless Headphone (Black)
-                      </h5>
-                      <p className="text-muted mb-0">$ 225 x 1</p>
-                    </div>
-                  </td>
-                  <td>$ 255</td>
-                </tr>
-                <tr>
-                  <th scope="row">
-                    <div>
-                      <img  alt="" className="avatar-sm" />
-                    </div>
-                  </th>
-                  <td>
-                    <div>
-                      <h5 className="text-truncate font-size-14">
-                        Hoodie (Blue)
-                      </h5>
-                      <p className="text-muted mb-0">$ 145 x 1</p>
-                    </div>
-                  </td>
-                  <td>$ 145</td>
-                </tr>
-                <tr>
-                  <td colSpan={2}>
-                    <h6 className="m-0 text-end">Sub Total:</h6>
-                  </td>
-                  <td>$ 400</td>
-                </tr>
-                <tr>
-                  <td colSpan={2}>
-                    <h6 className="m-0 text-end">Shipping:</h6>
-                  </td>
-                  <td>Free</td>
-                </tr>
+                {order?.products?.map((product: any, index: number) => (
+                  <tr key={index}>
+                    <th scope="row">
+                      <div>
+                        <img alt="" src={product.productImage} className="avatar-sm" />
+                      </div>
+                    </th>
+                    <td>
+                      <div>
+                        <h5 className="text-truncate font-size-14">
+                          {product.productName}
+                        </h5>
+                        <p className="text-muted mb-0">{ moneyFormatter(product.productPrice,'$')}</p>
+                      </div>
+                    </td>
+                    <td>$ 255</td>
+                  </tr>
+                ))}
+
                 <tr>
                   <td colSpan={2}>
                     <h6 className="m-0 text-end">Total:</h6>
                   </td>
-                  <td>$ 400</td>
+                  <td>{order?.total?  moneyFormatter(order?.total,'$'): ''}</td>
                 </tr>
               </tbody>
             </Table>
@@ -105,8 +86,7 @@ const EcommerceOrdersModal: React.FC <EcommerceOrdersModalProps> = props => {
         </ModalFooter>
       </div>
     </Modal>
-  )
-}
+  );
+};
 
-
-export default EcommerceOrdersModal
+export default EcommerceOrdersModal;

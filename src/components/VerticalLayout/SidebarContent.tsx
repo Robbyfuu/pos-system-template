@@ -4,6 +4,9 @@ import React, { useEffect, useRef } from "react";
 // //Import Scrollbar
 import SimpleBar from "simplebar-react";
 
+// redux
+import { useSelector } from "react-redux";
+
 // MetisMenu
 import MetisMenu from "metismenujs";
 import { Link, useLocation } from "react-router-dom";
@@ -12,10 +15,15 @@ import withRouter from "../Common/withRouter";
 //i18n
 
 import { useCallback } from "react";
+import { IStateRegister, User } from "@/src/Interfaces";
+
 {/* @ts-ignore */}
 const SidebarContent = (props) => {
   const ref = useRef();
-  {/* @ts-ignore */}
+  const { user } = useSelector((state: IStateRegister) => state.Account);
+
+  {
+    /* @ts-ignore */}
   const activateParentDropdown = useCallback((item) => {
     item.classList.add("active");
     const parent = item.parentElement;
@@ -54,7 +62,8 @@ const SidebarContent = (props) => {
     scrollElement(item);
     return false;
   }, []);
-{/* @ts-ignore */}
+  {
+    /* @ts-ignore */ }
   const removeActivation = (items) => {
     for (var i = 0; i < items.length; ++i) {
       var item = items[i];
@@ -103,7 +112,8 @@ const SidebarContent = (props) => {
     const pathName = path.pathname;
     let matchingMenuItem = null;
     const ul = document.getElementById("side-menu");
-    {/* @ts-ignore */}
+    {
+      /* @ts-ignore */}
     const items = ul.getElementsByTagName("a");
     removeActivation(items);
 
@@ -119,7 +129,8 @@ const SidebarContent = (props) => {
   }, [path.pathname, activateParentDropdown]);
 
   useEffect(() => {
-    {/* @ts-ignore */}
+    {
+      /* @ts-ignore */}
     ref.current.recalculate();
   }, []);
 
@@ -132,64 +143,105 @@ const SidebarContent = (props) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     activeMenu();
   }, [activeMenu]);
-{/* @ts-ignore */}
+  {
+    /* @ts-ignore */}
   function scrollElement(item) {
     if (item) {
       const currentPosition = item.offsetTop;
       if (currentPosition > window.innerHeight) {
-        {/* @ts-ignore */}
+        {
+          /* @ts-ignore */}
         ref.current.getScrollElement().scrollTop = currentPosition - 300;
       }
     }
   }
-
+  function isAdmin(user: User) {
+    return user.roles.includes("admin");
+  }
+  const admin = isAdmin(user!);
+  console.log(admin);
   return (
     <React.Fragment>
       {/* @ts-ignore */}
       <SimpleBar className="h-100" ref={ref}>
         <div id="sidebar-menu">
-          <ul className="metismenu list-unstyled" id="side-menu">
-            <li className="menu-title">{"Menu"} </li>
-            <li>
-              <Link to="/dashboard">
-                <i className="bx bx-home-circle"></i>
-                <span>{"Dashboards"}</span>
-              </Link>
-            </li>
-            <li>
-            <Link to="/#" className="has-arrow">
-                <i className="bx bx-store"></i>
-                <span>{"Ecommerce"}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/ecommerce-products">{"Products"}</Link>
-                </li>
-                {/* <li>
+          {admin ? (
+            <ul className="metismenu list-unstyled" id="side-menu">
+              <li className="menu-title">{"Menu"} </li>
+              <li>
+                <Link to="/dashboard">
+                  <i className="bx bx-home-circle"></i>
+                  <span>{"Dashboards"}</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/#" className="has-arrow">
+                  <i className="bx bx-store"></i>
+                  <span>{"Ecommerce"}</span>
+                </Link>
+                <ul className="sub-menu" aria-expanded="false">
+                  <li>
+                    <Link to="/ecommerce-products">{"Products"}</Link>
+                  </li>
+                  {/* <li>
                   <Link to="/ecommerce-product-detail/1">
                     {"Product Detail"}
                   </Link>
                 </li> */}
-                <li>
-                  <Link to="/ecommerce-orders">{"Orders"}</Link>
-                </li>
-                {/* <li>
+                  <li>
+                    <Link to="/ecommerce-orders">{"Orders"}</Link>
+                  </li>
+                  {/* <li>
                   <Link to="/ecommerce-customers">{"Customers"}</Link>
                 </li>
                 <li>
                   <Link to="/ecommerce-cart">{"Cart"}</Link>
                 </li> */}
-                {/* <li>
+                  {/* <li>
                   <Link to="/ecommerce-checkout">{"Checkout"}</Link>
                 </li> */}
-                <li>
-                  <Link to="/ecommerce-add-product">
-                    {"Add Product"}
+                  <li>
+                    <Link to="/ecommerce-add-product">{"Add Product"}</Link>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          ) : (
+            <ul className="metismenu list-unstyled" id="side-menu">
+              <li className="menu-title">{"Menu"} </li>
+              <li>
+                <Link to="/#" className="has-arrow">
+                  <i className="bx bx-store"></i>
+                  <span>{"Ecommerce"}</span>
+                </Link>
+                <ul className="sub-menu" aria-expanded="false">
+                  <li>
+                    <Link to="/ecommerce-products">{"Products"}</Link>
+                  </li>
+                  {/* <li>
+                  <Link to="/ecommerce-product-detail/1">
+                    {"Product Detail"}
                   </Link>
+                </li> */}
+{/*                   <li>
+                    <Link to="/ecommerce-orders">{"Orders"}</Link>
+                  </li> */}
+                  {/* <li>
+                  <Link to="/ecommerce-customers">{"Customers"}</Link>
                 </li>
-              </ul>
-            </li>
-          </ul>
+                <li>
+                  <Link to="/ecommerce-cart">{"Cart"}</Link>
+                </li> */}
+                  {/* <li>
+                  <Link to="/ecommerce-checkout">{"Checkout"}</Link>
+                </li> */}
+{/*                   <li>
+                    <Link to="/ecommerce-add-product">{"Add Product"}</Link>
+                  </li> */}
+                </ul>
+              </li>
+            </ul>
+          )}
         </div>
       </SimpleBar>
     </React.Fragment>
@@ -201,4 +253,4 @@ SidebarContent.propTypes = {
   t: PropTypes.any,
 };
 
-export default withRouter((SidebarContent));
+export default withRouter(SidebarContent);

@@ -37,7 +37,7 @@ export interface IStateLogin {
   };
 }
 export interface IStateRegister {
-  Acount: {
+  Account: {
     loading?: boolean;
     registrationError?: string;
     message?: string;

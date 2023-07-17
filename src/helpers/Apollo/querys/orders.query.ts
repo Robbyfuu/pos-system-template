@@ -10,8 +10,7 @@ export const orderCreateMutation = gql`
         id
         productName
         productPrice
-        productInventory
-        cartquantity
+        quantity
       }
       updatedAt
       seller {
@@ -35,10 +34,8 @@ export const ordersQuery = gql`
         productName
         productPrice
         productImage
-        productInventory
-        productCategory
         productUnit
-        cartquantity
+        quantity
       }
       updatedAt
       seller {

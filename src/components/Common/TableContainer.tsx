@@ -33,7 +33,7 @@ function GlobalFilter({
         <div className="position-relative">
           <label htmlFor="search-bar-0" className="search-label">
             <span id="search-bar-0-label" className="sr-only">
-              Search this table
+              Buscar
             </span>
             <input
               onChange={(e) => {
@@ -71,6 +71,7 @@ const TableContainer: React.FC<TableContainerProps> = ({
   columns,
   data,
   isAddOptions,
+  isGlobalFilter,
   isAddUserList,
   handleOrderClicks,
   handleUserClick,
@@ -143,18 +144,18 @@ const TableContainer: React.FC<TableContainerProps> = ({
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
-                Show {pageSize}
+                Ver {pageSize} 
               </option>
             ))}
           </select>
         </Col>
-        {/* {isGlobalFilter && (
+       {isGlobalFilter && (
           <GlobalFilter
             preGlobalFilteredRows={preGlobalFilteredRows}
             globalFilter={state.globalFilter}
             setGlobalFilter={setGlobalFilter}
           />
-        )} */}
+        )} 
         {isAddOptions && (
           <Col sm="11">
             <div className="text-sm-end">

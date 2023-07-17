@@ -38,6 +38,13 @@ import {
   getOrdersSuccess,
 } from "@/src/store/e-commerce/reducer";
 
+interface IOrder{
+  seller:{
+    firstName:string;
+    lastName: string;
+  }
+}
+
 function EcommerceOrder() {
   //meta title
   document.title = "Orders | Skote - Vite React Admin & Dashboard Template";
@@ -141,7 +148,7 @@ function EcommerceOrder() {
       },
       {
         Header: "Vendedor",
-        accessor: "seller.firtsName",
+        accessor: (row:IOrder) => `${row.seller.firstName} ${row.seller.lastName}`,
         filterable: true,
         Cell: (cellProps: any) => {
           return <PaymentStatus {...cellProps} />;
@@ -205,7 +212,7 @@ function EcommerceOrder() {
                     columns={columns}
                     data={orders}
                     isGlobalFilter={true}
-                    isAddOptions={true}
+                    isAddOptions={false}
                     handleOrderClicks={handleOrderClicks}
                     customPageSize={10}
                     className="custom-header-css"

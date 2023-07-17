@@ -39,12 +39,12 @@ const PaymentStatus = (cell) => {
   return (
     <div
       className={
-        "badge font-size-12 badge-soft-" +
+        "badge font-size-12 badge-soft-success" /* +
         (cell.value === "pendiente"
           ? "success"
           : "danger" && cell.value === "efectivo"
           ? "warning"
-          : "danger")
+          : "danger") */
       }
        //@ts-ignore
       pill="true"

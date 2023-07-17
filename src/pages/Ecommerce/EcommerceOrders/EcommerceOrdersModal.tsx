@@ -37,16 +37,16 @@ const EcommerceOrdersModal: React.FC<EcommerceOrdersModalProps> = (props) => {
           </p>
           <p className="mb-4">
             Vendedor:{" "}
-            <span className="text-primary">{order?.seller?.firtsName}</span>
+            <span className="text-primary">{`${order?.seller?.firstName} ${order?.seller?.lastName}`}</span>
           </p>
 
           <div className="table-responsive">
             <Table className="table align-middle table-nowrap">
               <thead>
                 <tr>
-                  <th scope="col">Product</th>
-                  <th scope="col">Product Name</th>
-                  <th scope="col">Price</th>
+                  <th scope="col">Producto</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Precio</th>
                 </tr>
               </thead>
               <tbody>
@@ -62,10 +62,10 @@ const EcommerceOrdersModal: React.FC<EcommerceOrdersModalProps> = (props) => {
                         <h5 className="text-truncate font-size-14">
                           {product.productName}
                         </h5>
-                        <p className="text-muted mb-0">{ moneyFormatter(product.productPrice,'$')}</p>
+                        <p className="text-muted mb-0">{`${moneyFormatter(product.productPrice,'$')} x ${product?.productUnit} `}</p>
                       </div>
                     </td>
-                    <td>$ 255</td>
+                    <td>  {moneyFormatter( product?.quantity*product?.productPrice, '$')} </td>
                   </tr>
                 ))}
 
@@ -81,7 +81,7 @@ const EcommerceOrdersModal: React.FC<EcommerceOrdersModalProps> = (props) => {
         </ModalBody>
         <ModalFooter>
           <Button type="button" color="secondary" onClick={toggle}>
-            Close
+            Cerrar
           </Button>
         </ModalFooter>
       </div>
